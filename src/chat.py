@@ -21,6 +21,7 @@ from .config import (
     TOP_K,
 )
 from .rag import TravelRAG
+from .prompt_pool import build_fewshot_prompt, select_example
 
 
 class TravelChat:
@@ -48,8 +49,11 @@ class TravelChat:
                 max_tokens=2000,
             )
 
-    def chat(self, question: str) -> dict:
+    def chat(self, question: str, use_fewshot: bool = True) -> dict:
         """对话 - 支持 RAG 未命中时 fallback"""
+        # 0. Few-shot 增强
+        enhanced_question = build_fewshot_prompt(question, use_fewshot)
+        
         # 1. 尝试检索
         retriever = self.rag.get_retriever(top_k=TOP_K)
         docs = retriever.invoke(question)
@@ -65,6 +69,14 @@ class TravelChat:
 注意：这是通用建议而非基于特定旅游攻略。"""),
                 ("user", "用户问题：{question}\n\n请给出详细的旅游建议："),
             ])
+            
+            # Few-shot 增强
+            if use_fewshot and select_example(question):
+                # 重构 prompt 使用 Few-shot
+                prompt = ChatPromptTemplate.from_messages([
+                    ("system", "你是一个专业的旅游顾问助手。请按以下示例格式回答。"),
+                    ("user", "{question}\n\n请给出详细的旅游建议："),
+                ])
         else:
             # RAG 命中，使用知识库
             print(f"✅ RAG 检索成功，找到 {len(docs)} 条相关内容")
@@ -78,7 +90,7 @@ class TravelChat:
 
         # 3. 调用 LLM
         chain = prompt | self.llm | StrOutputParser()
-        answer = chain.invoke({"context": context, "question": question})
+        answer = chain.invoke({"context": context, "question": enhanced_question})
 
         return {
             "answer": answer,
