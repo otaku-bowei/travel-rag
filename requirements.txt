@@ -27,3 +27,6 @@ python-dotenv>=1.0.0
 
 # 向量库存储
 aiofiles>=24.0.0
+overrides~=7.7.0
+langchain-text-splitters~=1.1.2
+pydantic~=2.13.4
