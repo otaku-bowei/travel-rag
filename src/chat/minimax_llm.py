@@ -1,6 +1,9 @@
 import string
 from typing import Any
 
+from langchain_core.callbacks import StdOutCallbackHandler
+from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+from langchain_core.runnables import RunnableConfig
 from langchain_openai import ChatOpenAI
 from overrides import overrides
 
@@ -10,22 +13,29 @@ from src.prompt.base import BasePrompt
 
 class MiniMaxLlm(Llm):
 
-
-    def __init__(self, api_key, base_url, model_name="MiniMax-M3.0"):
+    def __init__(self, api_key, base_url, model_name="MiniMax-M3.0", tools=None):
         super().__init__()
+        if tools is None:
+            tools = []
         self.api_key = api_key
         self.base_url = base_url
         self.model_name = model_name
-
+        self.configLlm(tools)
 
     @overrides
-    def configLlm(self) -> ChatOpenAI:
+    def configLlm(self, tools=None) -> ChatOpenAI:
         self.llm = ChatOpenAI(model_name=self.model_name,
                               openai_api_base=self.base_url,
                               openai_api_key=self.api_key)
+        if tools is not None:
+            self.llm = self.llm.bind_tools(tools=tools)
         return self.llm
 
-
     @overrides
-    def invokeLlm(self, input : BasePrompt, **kwargs:Any):
-        self.llm.invoke(input=input, **kwargs)
+    def invokeLlm(self, input: string, base_prompt: BasePrompt, **kwargs: Any) -> AIMessage:
+        messages = [
+            base_prompt.get_formatted_prompt(**kwargs),
+            HumanMessage(content=input)
+        ]
+        response = self.llm.invoke(messages)
+        return response
