@@ -5,6 +5,7 @@ from langchain_openai import ChatOpenAI
 from overrides import overrides
 
 from src.chat.base import Llm
+from src.prompt.base import BasePrompt
 
 
 class MiniMaxLlm(Llm):
@@ -26,5 +27,5 @@ class MiniMaxLlm(Llm):
 
 
     @overrides
-    def invokeLlm(self, input : string, **kwargs:Any):
+    def invokeLlm(self, input : BasePrompt, **kwargs:Any):
         self.llm.invoke(input=input, **kwargs)
