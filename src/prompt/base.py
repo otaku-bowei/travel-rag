@@ -21,8 +21,27 @@ class BasePrompt(ABC):
     def __init__(self):
         pass
 
+    def set_messages(self):
+        pass
+
+    def set_kwargs_messages(self):
+        pass
+
     def get_messages(self) -> list[SystemMessage]:
         pass
 
-    def get_formatted_prompt(self, **kwargs) -> str:
+    def get_kwargs_messages(self) -> list[SystemMessage]:
         pass
+
+    def get_formatted_prompt(self, **kwargs) -> SystemMessage:
+        messages = self.get_kwargs_messages()
+        lines = []
+        for msg in messages:
+            content = msg.content
+            # 简单替换 {variable} 格式的占位符
+            for k, v in kwargs.items():
+                placeholder = f"{{{k}}}"
+                if placeholder in content:
+                    content = content.replace(placeholder, str(v))
+            lines.append(content)
+        return SystemMessage("\r\n".join(lines))

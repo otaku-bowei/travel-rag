@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from openai import api_key
 
 from src.chat.minimax_llm import MiniMaxLlm
+from src.chat.qwen_llm import QwenLlm
+from src.prompt.cot_prompt import CotPrompt
 from src.prompt.travel_prompt import TravelPrompt
 from src.prompt.target_type import QuestionType
 from src.service.config import *
@@ -57,9 +59,35 @@ def toolUse():
     print(answer)
 
 
+
+def testOllama():
+    cp = CotPrompt()
+    base_url = read_environment_config("OLLAMA_BASE_URL")
+    api_key = read_environment_config("OLLAMA_API_KEY")
+    llm = QwenLlm(api_key, base_url, )
+    response= llm.invokeLlm(input="你好", base_prompt=cp)
+    print(response)
+
+
+def testUsingOllamaForCot():
+    cp = CotPrompt()
+    # base_url = read_environment_config("OLLAMA_BASE_URL")
+    # api_key = read_environment_config("OLLAMA_API_KEY")
+    # llm = QwenLlm(api_key, base_url, )
+    """初始化"""
+    api_key = read_environment_config("MINIMAX_API_KEY")
+    model_name = read_environment_config("MINIMAX_MODEL")
+    base_url = read_environment_config("MINIMAX_BASE_URL")
+    llm = MiniMaxLlm(api_key, base_url, model_name, )
+    response = llm.invokeLlm(input="如果我近期去东京旅游，怎么安排比较好", base_prompt=cp)
+    print(response)
+
+
 if __name__ == "__main__":
     load_dotenv()
     # testPromptTemplate()
     # testLlmRequest()
-    testLlmToolRequest()
+    # testLlmToolRequest()
     # toolUse()
+    # testOllama()
+    testUsingOllamaForCot()

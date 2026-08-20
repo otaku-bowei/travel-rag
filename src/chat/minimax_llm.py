@@ -33,9 +33,10 @@ class MiniMaxLlm(Llm):
 
     @overrides
     def invokeLlm(self, input: string, base_prompt: BasePrompt, **kwargs: Any) -> AIMessage:
-        messages = [
-            base_prompt.get_formatted_prompt(**kwargs),
-            HumanMessage(content=input)
-        ]
-        response = self.llm.invoke(messages)
+        msgs = []
+        msgs.extend(base_prompt.get_messages())
+        if len(base_prompt.get_kwargs_messages()) != 0:
+            msgs.extend(base_prompt.get_messages())
+        msgs.extend([HumanMessage(content=input)])
+        response = self.llm.invoke(msgs)
         return response

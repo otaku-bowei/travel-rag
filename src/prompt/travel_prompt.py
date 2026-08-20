@@ -23,9 +23,10 @@ class TravelPrompt(BasePrompt):
     def __init__(self, qt: list[QuestionType]):
         super().__init__()
         self.messages = []
-        self.messages.append(self.base_template())
         self.qt = qt
         self.set_messages()
+        self.kwargs_messages = []
+        self.set_kwargs_messages()
 
     '''
     核心模板
@@ -59,6 +60,7 @@ class TravelPrompt(BasePrompt):
         return self.qt
 
 
+    @overrides
     def set_messages(self):
         result = [self.base_template()]
         for i in self.qt:
@@ -78,22 +80,13 @@ class TravelPrompt(BasePrompt):
         self.messages = result
 
     @overrides
+    def set_kwargs_messages(self):
+        self.kwargs_messages = []
+
+    @overrides
     def get_messages(self) -> list[SystemMessage]:
         return self.messages
 
-    '''
-    format method
-    '''
     @overrides
-    def get_formatted_prompt(self, **kwargs) -> str:
-        messages = self.get_messages()
-        lines = []
-        for msg in messages:
-            content = msg.content
-            # 简单替换 {variable} 格式的占位符
-            for k, v in kwargs.items():
-                placeholder = f"{{{k}}}"
-                if placeholder in content:
-                    content = content.replace(placeholder, str(v))
-            lines.append(content)
-        return "\n".join(lines)
+    def get_kwargs_messages(self) -> list[SystemMessage]:
+        return self.kwargs_messages
