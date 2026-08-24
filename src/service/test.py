@@ -87,7 +87,7 @@ def test_using_ollama_for_cot():
 
 def test_import_file_vector():
     cs = ChromaService("../../data/chroma")
-    file_path = ""
+    file_path = "../../data/knowledge/kyoto_osaka.md"
     cs.import_md_file(file_path)
 
 
@@ -96,8 +96,7 @@ def test_vector_search():
     cs = ChromaService("../../data/chroma")
     documents = cs.search(_search)
     for d in documents:
-        print(d.metadata)
-        print(d.page_content)
+        print(d)
 
 if __name__ == "__main__":
     load_dotenv()

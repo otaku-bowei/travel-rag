@@ -22,7 +22,7 @@ def clean_text(text: str) -> str:
     return result
 
 
-def split_paragraphs(content: str) -> List[str]:
+def split_paragraphs(content: str, length : int = 500) -> List[str]:
     """按段落分割 md 内容
     分割规则：
     1. 以 ## 开头的新标题作为新段落
@@ -36,5 +36,6 @@ def split_paragraphs(content: str) -> List[str]:
         sub_paragraphs = re.split(r'\n\s*\n', part)
         for sub in sub_paragraphs:
             if sub.strip():
-                paragraphs.append(sub.strip())
+                ss = sub.strip()[:length] if len(sub.strip()) > length else sub.strip()
+                paragraphs.append(ss)
     return paragraphs
