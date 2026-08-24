@@ -15,16 +15,17 @@ from src.prompt.travel_prompt import TravelPrompt
 from src.prompt.target_type import QuestionType
 from src.service.config import *
 from src.tools.search_tool import search
+from src.vector.chroma_service import ChromaService
 
 '''
 实现根据提问类型控制提示词的方向
 '''
-def testPromptTemplate():
+def test_prompt_template():
     bp = TravelPrompt(qt=[QuestionType.WEATHER])
     print(bp.get_formatted_prompt(places=["大阪", "京都"], dates=["2026-08-17", "2026-08-18"]))
 
 
-def testLlmRequest():
+def test_llm_request():
     """初始化"""
     api_key = read_environment_config("MINIMAX_API_KEY")
     model_name = read_environment_config("MINIMAX_MODEL")
@@ -38,7 +39,7 @@ def testLlmRequest():
     print(responses)
 
 
-def testLlmToolRequest():
+def test_llm_tool_request():
     """初始化"""
     api_key = read_environment_config("MINIMAX_API_KEY")
     model_name = read_environment_config("MINIMAX_MODEL")
@@ -54,13 +55,13 @@ def testLlmToolRequest():
     print(responses)
 
 
-def toolUse():
+def tool_use():
     answer = search.invoke("大阪 京都 2026年8月17日 8月18日 天气预报")
     print(answer)
 
 
 
-def testOllama():
+def test_ollama():
     cp = CotPrompt()
     base_url = read_environment_config("OLLAMA_BASE_URL")
     api_key = read_environment_config("OLLAMA_API_KEY")
@@ -69,19 +70,34 @@ def testOllama():
     print(response)
 
 
-def testUsingOllamaForCot():
+def test_using_ollama_for_cot():
     cp = CotPrompt()
-    # base_url = read_environment_config("OLLAMA_BASE_URL")
-    # api_key = read_environment_config("OLLAMA_API_KEY")
-    # llm = QwenLlm(api_key, base_url, )
+    base_url = read_environment_config("OLLAMA_BASE_URL")
+    api_key = read_environment_config("OLLAMA_API_KEY")
+    model_name = read_environment_config("OLLAMA_MODEL_NAME")
+    llm = QwenLlm(api_key, base_url, model_name)
     """初始化"""
-    api_key = read_environment_config("MINIMAX_API_KEY")
-    model_name = read_environment_config("MINIMAX_MODEL")
-    base_url = read_environment_config("MINIMAX_BASE_URL")
-    llm = MiniMaxLlm(api_key, base_url, model_name, )
+    # api_key = read_environment_config("MINIMAX_API_KEY")
+    # model_name = read_environment_config("MINIMAX_MODEL")
+    # base_url = read_environment_config("MINIMAX_BASE_URL")
+    # llm = MiniMaxLlm(api_key, base_url, model_name, )
     response = llm.invokeLlm(input="如果我近期去东京旅游，怎么安排比较好", base_prompt=cp)
     print(response)
 
+
+def test_import_file_vector():
+    cs = ChromaService("../../data/chroma")
+    file_path = ""
+    cs.import_md_file(file_path)
+
+
+def test_vector_search():
+    _search = "京都哪里好玩"
+    cs = ChromaService("../../data/chroma")
+    documents = cs.search(_search)
+    for d in documents:
+        print(d.metadata)
+        print(d.page_content)
 
 if __name__ == "__main__":
     load_dotenv()
@@ -90,4 +106,6 @@ if __name__ == "__main__":
     # testLlmToolRequest()
     # toolUse()
     # testOllama()
-    testUsingOllamaForCot()
+    # testUsingOllamaForCot()
+    test_import_file_vector()
+    test_vector_search()
