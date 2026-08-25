@@ -14,12 +14,13 @@ from src.prompt.base import BasePrompt
 """
 class QwenLlm(Llm):
 
-    def __init__(self, api_key:str, base_url : str, model_name = "qwen", tools=None):
+    def __init__(self, api_key:str, base_url : str, model_name = "qwen", tools=None, llm=None):
         super().__init__()
         self.base_url = base_url
         self.api_key = api_key
         self.model_name = model_name
-        self.configLlm(tools)
+        if llm is None :
+            self.configLlm(tools)
 
 
     @overrides
@@ -41,3 +42,16 @@ class QwenLlm(Llm):
         msgs.extend([HumanMessage(content=input)])
         response = self.llm.invoke(msgs)
         return response
+
+    @overrides
+    def to_dict(self) -> dict:
+        return {"api_key":self.api_key, "base_url":self.base_url, "model_name":self.model_name, "llm":self.llm}
+
+    @classmethod
+    def from_dict(cls, config: dict):
+        return cls(
+            api_key=config["api_key"],
+            base_url=config["base_url"],
+            model_name=config["model_name"],
+            llm=config["llm"]
+        )

@@ -19,3 +19,11 @@ class Llm(ABC):
     """调用 LLM 并返回结果"""
     def invokeLlm(self, input: string, base_prompt: BasePrompt, **kwargs: Any) -> AIMessage:
         pass
+
+
+    def to_dict(self) -> dict:
+        pass
+
+    @classmethod
+    def from_dict(cls, config : dict):
+        pass

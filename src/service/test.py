@@ -8,6 +8,7 @@ from http.client import responses
 from dotenv import load_dotenv
 from openai import api_key
 
+from src.cache.cache_llm import *
 from src.chat.minimax_llm import MiniMaxLlm
 from src.chat.qwen_llm import QwenLlm
 from src.prompt.cot_prompt import CotPrompt
@@ -92,11 +93,28 @@ def test_import_file_vector():
 
 
 def test_vector_search():
-    _search = "京都哪里好玩"
+    _search = "大阪哪里好玩"
     cs = ChromaService("../../data/chroma")
     documents = cs.search(_search)
     for d in documents:
         print(d)
+
+
+
+def test_rag_tool():
+    # # 1. 先进行CoT分析
+    # init_cot_llm()
+    # cot_llm = get_cot_llm()
+    user_question = "东京有什么好玩的"
+    # user_question = "大阪有什么好玩的"
+    init_travel_llm()
+    travel_llm = get_travel_llm()
+    """基于TravelPrompt对问题进行翻译"""  # TODO--改为ai实现的CoT
+    bp = TravelPrompt(qt=[QuestionType.WEATHER])
+    responses = travel_llm.invokeLlm(input=user_question, base_prompt=bp, places=["东京"],
+                              dates=["2026-08-17", "2026-08-18"])
+    print(responses)
+
 
 if __name__ == "__main__":
     load_dotenv()
@@ -106,5 +124,6 @@ if __name__ == "__main__":
     # toolUse()
     # testOllama()
     # testUsingOllamaForCot()
-    test_import_file_vector()
-    test_vector_search()
+    # test_import_file_vector()
+    # test_vector_search()
+    test_rag_tool()
