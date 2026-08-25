@@ -25,5 +25,5 @@ class Llm(ABC):
         pass
 
     @classmethod
-    def from_dict(cls, config : dict):
+    def from_dict(cls, config : dict, tools : None):
         pass

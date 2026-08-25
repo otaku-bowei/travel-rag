@@ -19,8 +19,9 @@ class QwenLlm(Llm):
         self.base_url = base_url
         self.api_key = api_key
         self.model_name = model_name
+        self.tools = tools
         if llm is None :
-            self.configLlm(tools)
+            self.configLlm(self.tools)
 
 
     @overrides
@@ -45,13 +46,13 @@ class QwenLlm(Llm):
 
     @overrides
     def to_dict(self) -> dict:
-        return {"api_key":self.api_key, "base_url":self.base_url, "model_name":self.model_name, "llm":self.llm}
+        return {"api_key": self.api_key, "base_url": self.base_url, "model_name": self.model_name, "tools": self.tools}
 
     @classmethod
-    def from_dict(cls, config: dict):
+    def from_dict(cls, config: dict, tools : None):
         return cls(
             api_key=config["api_key"],
             base_url=config["base_url"],
             model_name=config["model_name"],
-            llm=config["llm"]
+            tools=tools,
         )

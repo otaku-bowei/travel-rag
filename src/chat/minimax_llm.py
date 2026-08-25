@@ -20,8 +20,9 @@ class MiniMaxLlm(Llm):
         self.api_key = api_key
         self.base_url = base_url
         self.model_name = model_name
-        if llm is None :
-            self.configLlm(tools)
+        self.tools = tools
+        if llm is None:
+            self.configLlm(self.tools)
 
     @overrides
     def configLlm(self, tools=None) -> ChatOpenAI:
@@ -42,15 +43,16 @@ class MiniMaxLlm(Llm):
         response = self.llm.invoke(msgs)
         return response
 
-    @overrides
     def to_dict(self) -> dict:
-        return {"api_key":self.api_key, "base_url":self.base_url, "model_name":self.model_name, "llm":self.llm}
+        # 不保存 tools（无法序列化），只保存配置
+        return {"api_key": self.api_key, "base_url": self.base_url, "model_name": self.model_name}
 
     @classmethod
-    def from_dict(cls, config : dict):
+    def from_dict(cls, config: dict, tools=None):
+        # 从配置重建 llm，tools 单独传入
         return cls(
             api_key=config["api_key"],
             base_url=config["base_url"],
             model_name=config["model_name"],
-            llm=config["llm"]
+            tools=tools
         )

@@ -15,6 +15,7 @@ from src.prompt.cot_prompt import CotPrompt
 from src.prompt.travel_prompt import TravelPrompt
 from src.prompt.target_type import QuestionType
 from src.service.config import *
+from src.tools.rag_tool import rag_search
 from src.tools.search_tool import search
 from src.vector.chroma_service import ChromaService
 
@@ -107,10 +108,10 @@ def test_rag_tool():
     # cot_llm = get_cot_llm()
     user_question = "东京有什么好玩的"
     # user_question = "大阪有什么好玩的"
-    init_travel_llm()
-    travel_llm = get_travel_llm()
+    init_travel_llm([rag_search])
+    travel_llm = get_travel_llm([rag_search])
     """基于TravelPrompt对问题进行翻译"""  # TODO--改为ai实现的CoT
-    bp = TravelPrompt(qt=[QuestionType.WEATHER])
+    bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     responses = travel_llm.invokeLlm(input=user_question, base_prompt=bp, places=["东京"],
                               dates=["2026-08-17", "2026-08-18"])
     print(responses)
