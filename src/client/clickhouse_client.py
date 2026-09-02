@@ -4,9 +4,10 @@ ClickHouse 客户端
 """
 
 import os
-from typing import Optional
+from typing import Optional, Any
 
 import clickhouse_connect
+
 
 
 class ClickHouseClient:
@@ -47,9 +48,13 @@ class ClickHouseClient:
         """执行查询"""
         return self.client.query(sql).result_rows
 
-    def insert(self, table: str, data: list):
-        """插入数据"""
-        self.client.insert(table, data)
+    def insert(self, table: str, data: list[list], columns: list[str]) -> Any:
+        """批量插入数据"""
+        return self.client.insert(
+            table=table,
+            data=data,
+            column_names=columns
+        )
 
     def close(self):
         """关闭连接"""
@@ -60,7 +65,7 @@ class ClickHouseClient:
 _client: Optional[ClickHouseClient] = None
 
 
-def get_client() -> ClickHouseClient:
+def get_clickhouse_client() -> ClickHouseClient:
     """获取全局客户端单例"""
     global _client
     if _client is None:
@@ -74,3 +79,4 @@ def init_client(host: str = None, port: int = None, database: str = None,
     global _client
     _client = ClickHouseClient(host, port, database, username, password)
     return _client
+

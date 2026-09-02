@@ -8,6 +8,9 @@ from langchain_openai import ChatOpenAI
 from overrides import overrides
 
 from src.chat.base import Llm
+from src.chat.callback.tool_callback import ClickhouseRecordToolCallback
+from src.chat.callback.traces_callback import TraceChainCallBack
+from src.client.clickhouse_client import get_clickhouse_client
 from src.prompt.base import BasePrompt
 
 
@@ -28,7 +31,8 @@ class MiniMaxLlm(Llm):
     def configLlm(self, tools=None) -> ChatOpenAI:
         self.llm = ChatOpenAI(model_name=self.model_name,
                               openai_api_base=self.base_url,
-                              openai_api_key=self.api_key)
+                              openai_api_key=self.api_key,
+                              callbacks=[TraceChainCallBack(), ClickhouseRecordToolCallback(get_clickhouse_client())])
         if tools is not None:
             self.llm = self.llm.bind_tools(tools=tools)
         return self.llm
@@ -38,7 +42,7 @@ class MiniMaxLlm(Llm):
         msgs = []
         msgs.extend(base_prompt.get_messages())
         if len(base_prompt.get_kwargs_messages()) != 0:
-            msgs.extend(base_prompt.get_messages())
+            msgs.extend(base_prompt.get_formatted_prompt(**kwargs))
         msgs.extend([HumanMessage(content=input)])
         response = self.llm.invoke(msgs)
         return response

@@ -63,6 +63,11 @@ class TravelPrompt(BasePrompt):
     @overrides
     def set_messages(self):
         result = [self.base_template()]
+        self.messages = result
+
+    @overrides
+    def set_kwargs_messages(self):
+        result = []
         for i in self.qt:
             match i:
                 case QuestionType.WEATHER:
@@ -77,11 +82,7 @@ class TravelPrompt(BasePrompt):
                     result.append(self.schedule_template())
                 case QuestionType.ROUTE_LINE:
                     result.append(self.route_line_template())
-        self.messages = result
-
-    @overrides
-    def set_kwargs_messages(self):
-        self.kwargs_messages = []
+        self.kwargs_messages = result
 
     @overrides
     def get_messages(self) -> list[SystemMessage]:

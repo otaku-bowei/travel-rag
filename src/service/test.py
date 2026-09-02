@@ -8,15 +8,20 @@ from http.client import responses
 from dotenv import load_dotenv
 from openai import api_key
 
+from src.agent.cot_agent import CotAgent
+from src.agent.travel_agent import TravelAgent
 from src.cache.cache_llm import *
 from src.chat.minimax_llm import MiniMaxLlm
 from src.chat.qwen_llm import QwenLlm
+from src.client.clickhouse_client import ClickHouseClient
 from src.prompt.cot_prompt import CotPrompt
 from src.prompt.travel_prompt import TravelPrompt
 from src.prompt.target_type import QuestionType
 from src.service.config import *
 from src.tools.rag_tool import rag_search
 from src.tools.search_tool import search
+from src.tools.travel_agent_tool import travel_agent_tool
+from src.tools.travel_param_tool import get_travel_param
 from src.vector.chroma_service import ChromaService
 
 '''
@@ -117,6 +122,83 @@ def test_rag_tool():
     print(responses)
 
 
+def test_clickhouse_client():
+    """测试 ClickHouse 连接"""
+    print("\n=== ClickHouse 连接测试 ===")
+    client = ClickHouseClient()
+    try:
+        # 1. 查询版本
+        version = client.query("SELECT version()")
+        print(f"✅ 版本: {version[0][0]}")
+
+        # 2. 查询数据库
+        dbs = client.query("SHOW DATABASES")
+        db_names = [d[0] for d in dbs]
+        print(f"✅ 数据库: {db_names}")
+
+        # 3. 查询 rag_traces 表是否存在及结构
+        if "travel_rag" in db_names:
+            tables = client.query("SHOW TABLES FROM travel_rag")
+            print(f"✅ travel_rag 表: {[t[0] for t in tables]}")
+
+            if any("rag_traces" in t for t in tables):
+                cols = client.query("DESCRIBE TABLE travel_rag.rag_traces")
+                print(f"✅ rag_traces 字段数: {len(cols)}")
+                count = client.query("SELECT count() FROM travel_rag.rag_traces")
+                print(f"✅ 数据条数: {count[0][0]}")
+        else:
+            print("⚠️ travel_rag 数据库不存在")
+    except Exception as e:
+        print(f"❌ 连接失败: {e}")
+    finally:
+        client.close()
+        print("✅ 连接已关闭\n")
+
+def test_agent():
+    user_question = "大阪有什么好玩的"
+    # user_question = "大阪有什么好玩的"
+    init_travel_llm([rag_search])
+    travel_llm = get_travel_llm([rag_search])
+    """基于TravelPrompt对问题进行翻译"""  # TODO--改为ai实现的CoT
+    bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
+    travel_agent = TravelAgent(travel_llm, tools=[rag_search])
+    responses = travel_agent.invoke(input=user_question, base_prompt=bp, places=["大阪"],
+                                     dates=["2026-08-17", "2026-08-18"])
+    print(responses)
+
+
+def loop_talk_to_agent():
+    print("启动agent小助手")
+    init_travel_llm([rag_search])
+    cot_llm = get_cot_llm([rag_search, get_travel_param, travel_agent_tool])
+    # bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
+    bp = CotPrompt()
+    cot_agent = CotAgent(cot_llm, tools=[rag_search, get_travel_param, travel_agent_tool])
+    while True:
+        try:
+            user_input = input("> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nBye!")
+            break
+        # 退出条件
+        if user_input.lower() in ("q", "exit", "quit"):
+            print("Bye!")
+            break
+        # 空输入跳过
+        if not user_input:
+            continue
+        # 调用 agent
+        try:
+            responses = cot_agent.invoke(input=user_input, base_prompt=bp)
+            # 取最后一条 AI 消息作为回答
+            answer = responses["messages"][-1].content
+            print(f"\n{answer}\n")
+        except Exception as e:
+            print(f"\n[错误] {e}\n")
+
+
+
+
 if __name__ == "__main__":
     load_dotenv()
     # testPromptTemplate()
@@ -127,4 +209,7 @@ if __name__ == "__main__":
     # testUsingOllamaForCot()
     # test_import_file_vector()
     # test_vector_search()
-    test_rag_tool()
+    # test_rag_tool()
+    # test_clickhouse_client()
+    # test_agent()
+    loop_talk_to_agent()

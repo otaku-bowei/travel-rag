@@ -39,7 +39,7 @@ class CotPrompt(BasePrompt):
 
     def response_format_template(self) -> SystemMessage:
         # 规范响应格式，方便CoT后取数据
-        return SystemMessage(content="必须按JSON格式输出,如:{\"intent\":\"travel\",\"reasoning\":\"用户想知道大阪8月10号至8月17号的旅游攻略\",\"sub_questions\":[\"大阪旅游景点推荐\",\"大阪8月10号只8月17号天气\",\"大阪美食推荐\",\"大阪夏季旅游\"]}")
+        return SystemMessage(content="默认的JSON格式输出,如:{\"intent\":\"travel\",\"reasoning\":\"用户想知道大阪8月10号至8月17号的旅游攻略\",\"sub_questions\":[\"大阪旅游景点推荐\",\"大阪8月10号只8月17号天气\",\"大阪美食推荐\",\"大阪夏季旅游\"]}")
 
 
     def intent_recognition_template(self) -> SystemMessage:
@@ -58,6 +58,9 @@ class CotPrompt(BasePrompt):
                                      "用户问题：近期有什么基金值得买的\r\n"
                                      "输出：{\"intent\":\"finance\",\"reasoning\":\"用户希望能推荐一些近期的理财基金\",\"sub_questions\":[\"近期的股票新闻\",\"近期的交易数据\",\"股票大V看好的板块\"]}\r\n"
                              )
+
+    def customized_format(self, format_match : str):
+        return SystemMessage(content="但是现在不使用默认JSON输出格式，使用该JSON格式:" + format_match)
 
     '''
         getter & setter
@@ -79,3 +82,7 @@ class CotPrompt(BasePrompt):
     @overrides
     def get_kwargs_messages(self) -> list[SystemMessage]:
         return self.kwargs_messages
+
+
+    def set_customized_format(self, input : str):
+        self.messages.append(self.customized_format(input))
