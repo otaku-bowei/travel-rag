@@ -41,7 +41,7 @@ def init_travel_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool]
     _llm_cache.save_config(cache_key=_travel_cache_key, config=llm.to_dict())
 
 def get_cot_llm(tools=None) -> QwenLlm:
-    return QwenLlm.from_dict(_llm_cache.get_config(_cot_cache_key))
+    return QwenLlm.from_dict(_llm_cache.get_config(_cot_cache_key), tools=tools)
 
 def get_travel_llm(tools=None) -> MiniMaxLlm:
     return MiniMaxLlm.from_dict(_llm_cache.get_config(_travel_cache_key), tools=tools)

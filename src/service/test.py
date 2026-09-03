@@ -169,14 +169,18 @@ def test_agent():
 
 def loop_talk_to_agent():
     print("启动agent小助手")
-    init_travel_llm([rag_search])
-    cot_llm = get_cot_llm([rag_search, get_travel_param, travel_agent_tool])
+    cot_llm = get_cot_llm([get_travel_param,
+                           travel_agent_tool,
+                           ])
     # bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     bp = CotPrompt()
-    cot_agent = CotAgent(cot_llm, tools=[rag_search, get_travel_param, travel_agent_tool])
+    cot_agent = CotAgent(cot_llm, tools=[travel_agent_tool,
+                                         get_travel_param,
+                                         ])
     while True:
         try:
             user_input = input("> ").strip()
+            print("等待agent响应。。。")
         except (EOFError, KeyboardInterrupt):
             print("\nBye!")
             break
@@ -190,6 +194,7 @@ def loop_talk_to_agent():
         # 调用 agent
         try:
             responses = cot_agent.invoke(input=user_input, base_prompt=bp)
+            print(responses)
             # 取最后一条 AI 消息作为回答
             answer = responses["messages"][-1].content
             print(f"\n{answer}\n")
@@ -201,12 +206,15 @@ def loop_talk_to_agent():
 
 if __name__ == "__main__":
     load_dotenv()
+    init_travel_llm([rag_search, get_travel_param, travel_agent_tool])
+    init_cot_llm([rag_search, get_travel_param, travel_agent_tool])
     # testPromptTemplate()
     # testLlmRequest()
     # testLlmToolRequest()
     # toolUse()
     # testOllama()
     # testUsingOllamaForCot()
+    # test_using_ollama_for_cot()
     # test_import_file_vector()
     # test_vector_search()
     # test_rag_tool()

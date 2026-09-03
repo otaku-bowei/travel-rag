@@ -6,12 +6,15 @@ from langchain_openai import ChatOpenAI
 from overrides import overrides
 from langchain_ollama import ChatOllama
 from src.chat.base import Llm
+from src.chat.callback.cot_callback import ClickhouseRecordCoTCallback
 from src.chat.callback.tool_callback import ClickhouseRecordToolCallback
 from src.chat.callback.traces_callback import TraceChainCallBack
 from src.client.clickhouse_client import get_clickhouse_client
 from src.monitor.prompt_input_aspect import log_llm_last_input_prompt
 from src.prompt.base import BasePrompt
 
+
+_ch_client = get_clickhouse_client()
 """
 本地ollama安装的qwen的llm小模型
 """
@@ -32,7 +35,7 @@ class QwenLlm(Llm):
         self.llm = ChatOpenAI(model_name=self.model_name,
                               openai_api_base=self.base_url,
                               openai_api_key=self.api_key,
-                              callbacks=[TraceChainCallBack(), ClickhouseRecordToolCallback(get_clickhouse_client())])
+                              callbacks=[TraceChainCallBack(), ClickhouseRecordCoTCallback(_ch_client), ClickhouseRecordToolCallback(_ch_client)])
         if tools is not None:
             self.llm = self.llm.bind_tools(tools=tools)
         return self.llm
@@ -50,7 +53,7 @@ class QwenLlm(Llm):
 
     @overrides
     def to_dict(self) -> dict:
-        return {"api_key": self.api_key, "base_url": self.base_url, "model_name": self.model_name, "tools": self.tools}
+        return {"api_key": self.api_key, "base_url": self.base_url, "model_name": self.model_name, }
 
     @classmethod
     def from_dict(cls, config: dict, tools : None):

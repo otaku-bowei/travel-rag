@@ -35,7 +35,7 @@ class CotPrompt(BasePrompt):
 
     def base_template(self) -> SystemMessage:
         # 让LLM做简单的问题拆解
-        return SystemMessage(content="推理用户的这个问题，拆解成几个小问题")
+        return SystemMessage(content="推理用户的这个问题，拆解成几个小问题，必要时使用相关工具")
 
     def response_format_template(self) -> SystemMessage:
         # 规范响应格式，方便CoT后取数据
@@ -51,12 +51,12 @@ class CotPrompt(BasePrompt):
         return SystemMessage(content="示例1:\r\n"
                                      "用户问题：推荐一下大阪8月10日至8月17日可以玩什么\r\n"
                                      "输出：{\"intent\":\"travel\",\"reasoning\":\"用户想知道大阪8月10号至8月17号的旅游攻略\",\"sub_questions\":[\"大阪旅游景点推荐\",\"大阪8月10号只8月17号天气\",\"大阪美食推荐\",\"大阪夏季旅游\"]}\r\n"
-                                     "示例2:\r\n"
-                                     "用户问题：大阪去京都怎么走\r\n"
-                                     "输出：{\"intent\":\"travel\",\"reasoning\":\"用户想知道大阪去京都的路线\",\"sub_questions\":[\"大阪到京都交通路线\",\"大阪到京都的交通耗时\"]}\r\n"
-                                     "示例3:\r\n"
-                                     "用户问题：近期有什么基金值得买的\r\n"
-                                     "输出：{\"intent\":\"finance\",\"reasoning\":\"用户希望能推荐一些近期的理财基金\",\"sub_questions\":[\"近期的股票新闻\",\"近期的交易数据\",\"股票大V看好的板块\"]}\r\n"
+                                     # "示例2:\r\n"
+                                     # "用户问题：大阪去京都怎么走\r\n"
+                                     # "输出：{\"intent\":\"travel\",\"reasoning\":\"用户想知道大阪去京都的路线\",\"sub_questions\":[\"大阪到京都交通路线\",\"大阪到京都的交通耗时\"]}\r\n"
+                                     # "示例3:\r\n"
+                                     # "用户问题：近期有什么基金值得买的\r\n"
+                                     # "输出：{\"intent\":\"finance\",\"reasoning\":\"用户希望能推荐一些近期的理财基金\",\"sub_questions\":[\"近期的股票新闻\",\"近期的交易数据\",\"股票大V看好的板块\"]}\r\n"
                              )
 
     def customized_format(self, format_match : str):

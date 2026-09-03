@@ -70,6 +70,7 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
             return
         if not self._llm_models.get(chain_rid) and isinstance(serialized, dict):
             model_name = serialized.get('name', '') or ''
+            self._model_name = model_name
             if model_name:
                 self._llm_models[chain_rid] = model_name
 
@@ -111,8 +112,7 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
 
         user_question = self._user_questions.pop(rid, '')
         token_usage = self._token_usage.pop(rid, {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0})
-        llm_model = self._llm_models.pop(rid, '')
-
+        llm_model = self._model_name
         trace_id = current_trace_id.get()
         if not trace_id:
             return
@@ -147,8 +147,10 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
         user_question = self._user_questions.pop(rid, '')
         # 出错时 token 统计可能不完整
         token_usage = self._token_usage.pop(rid, {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0})
-        llm_model = self._llm_models.pop(rid, '')
-
+        # llm_model = self._llm_models.pop(rid, '')
+        print(kwargs)
+        metadata = kwargs.get('metadata') or {}
+        llm_model = metadata.get('ls_model_name', '')
         trace_id = current_trace_id.get()
         if not trace_id:
             return
