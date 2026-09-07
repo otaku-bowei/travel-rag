@@ -7,7 +7,7 @@ from langchain_core.tools import BaseTool
 from langgraph.graph import MessagesState
 from overrides import overrides
 
-from src.agent.base import Agent
+from src.agent.base import Agent, mix_system_message
 from src.chat.base import Llm
 from src.chat.callback.tool_callback import ClickhouseRecordToolCallback
 from src.chat.callback.traces_callback import TraceChainCallBack
@@ -44,12 +44,14 @@ class CotAgent(Agent):
         self.agent = agent
 
     @overrides
-    def invoke(self, input: string, base_prompt: BasePrompt, **kwargs: Any) -> AIMessage:
+    def invoke(self, query: string, base_prompt: BasePrompt, **kwargs: Any) -> AIMessage:
         msgs = []
-        msgs.extend(base_prompt.get_messages())
+        sys_msgs = []
+        sys_msgs.extend(base_prompt.get_messages())
         if len(base_prompt.get_kwargs_messages()) != 0:
-            msgs.extend(base_prompt.get_formatted_prompt(**kwargs))
-        msgs.extend([HumanMessage(content=input)])
+            sys_msgs.extend(base_prompt.get_formatted_prompt(**kwargs))
+        msgs.append(mix_system_message(sys_msgs))
+        msgs.append(HumanMessage(content=query))
         # for i, m in enumerate(msgs):
         #     print(f"[{i}] type={type(m).__name__} content={repr(str(m.content))[:80]}")
         config = {
@@ -62,4 +64,24 @@ class CotAgent(Agent):
             ]
         }
         response = self.agent.invoke({"messages": msgs}, config=config)
+        return response
+
+    @overrides
+    async def ainvoke(self, query, base_prompt, **kwargs):
+        msgs = []
+        sys_msgs = []
+        sys_msgs.extend(base_prompt.get_messages())
+        if len(base_prompt.get_kwargs_messages()) != 0:
+            sys_msgs.extend(base_prompt.get_formatted_prompt(**kwargs))
+        msgs.append(mix_system_message(sys_msgs))
+        msgs.append(HumanMessage(content=query))
+        config = {
+            "callbacks": [
+                TraceChainCallBack(),
+                ClickhouseRecordReactCallback(get_clickhouse_client()),
+                ClickhouseRecordCoTCallback(get_clickhouse_client()),
+                ClickhouseRecordToolCallback(get_clickhouse_client()),
+            ]
+        }
+        response = await self.agent.ainvoke({"messages": msgs}, config=config)
         return response

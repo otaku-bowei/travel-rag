@@ -28,6 +28,7 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
         # run_id → model_name
         self._llm_models: dict = {}
         self.chc = chc
+        self._model_name = "unknow"
 
 
     @overrides
@@ -96,6 +97,7 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
 
         if isinstance(llm_output, dict):
             model_name = llm_output.get('model_name', '') or ''
+            self._model_name = model_name
             if model_name and not self._llm_models.get(chain_rid):
                 self._llm_models[chain_rid] = model_name
 

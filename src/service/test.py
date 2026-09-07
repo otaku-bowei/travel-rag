@@ -14,6 +14,8 @@ from src.cache.cache_llm import *
 from src.chat.minimax_llm import MiniMaxLlm
 from src.chat.qwen_llm import QwenLlm
 from src.client.clickhouse_client import ClickHouseClient
+from src.mcp.base import start_mcp_in_thread
+from src.mcp.mcp_client import init_mcp_tools
 from src.prompt.cot_prompt import CotPrompt
 from src.prompt.travel_prompt import TravelPrompt
 from src.prompt.target_type import QuestionType
@@ -23,6 +25,7 @@ from src.tools.search_tool import search
 from src.tools.travel_agent_tool import travel_agent_tool
 from src.tools.travel_param_tool import get_travel_param
 from src.vector.chroma_service import ChromaService
+import asyncio
 
 '''
 实现根据提问类型控制提示词的方向
@@ -167,15 +170,17 @@ def test_agent():
     print(responses)
 
 
-def loop_talk_to_agent():
+async def loop_talk_to_agent():
     print("启动agent小助手")
-    cot_llm = get_cot_llm([get_travel_param,
+    cot_llm = get_cot_llm([
+        # get_travel_param,
                            travel_agent_tool,
                            ])
     # bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     bp = CotPrompt()
-    cot_agent = CotAgent(cot_llm, tools=[travel_agent_tool,
-                                         get_travel_param,
+    cot_agent = CotAgent(cot_llm, tools=[
+        travel_agent_tool,
+                                         # get_travel_param,
                                          ])
     while True:
         try:
@@ -193,7 +198,7 @@ def loop_talk_to_agent():
             continue
         # 调用 agent
         try:
-            responses = cot_agent.invoke(input=user_input, base_prompt=bp)
+            responses = await cot_agent.ainvoke(query=user_input, base_prompt=bp)
             print(responses)
             # 取最后一条 AI 消息作为回答
             answer = responses["messages"][-1].content
@@ -206,6 +211,8 @@ def loop_talk_to_agent():
 
 if __name__ == "__main__":
     load_dotenv()
+    mcp_thread = start_mcp_in_thread()
+    init_mcp_tools()
     init_travel_llm([rag_search, get_travel_param, travel_agent_tool])
     init_cot_llm([rag_search, get_travel_param, travel_agent_tool])
     # testPromptTemplate()
@@ -220,4 +227,4 @@ if __name__ == "__main__":
     # test_rag_tool()
     # test_clickhouse_client()
     # test_agent()
-    loop_talk_to_agent()
+    asyncio.run(loop_talk_to_agent())

@@ -29,11 +29,24 @@ def _parse_llm_json(content: str) -> dict:
 
 
 @tool
-def get_travel_param(input:str) -> dict:
-    """
-    当用户问题和旅游攻略有关适合，分析用户意图是否和{地点、时间点、天气、交通、美食、路线有关}，如果是，请按格式返回。
-    如：params = {"places":["大阪","京都"], "dates":["2026-08-01","2026-08-02"], "weather":None, "traffic":"JR线", "foods":["汤咖哩","和牛"], "line":""}
-    """
+def get_travel_param(query: str) -> dict:
+    """当用户问题和旅游攻略有关适合，分析用户意图是否和{地点、时间点、天气、交通、美食、路线有关}，如果是，请按格式返回。
+
+                何时使用：
+                - 当用户问题或者提问意图涉及旅游{某个地点的美食、景点、天气、交通、国情等}的时候，使用该agent回答用户的问题。
+
+                Args:
+                    query: 用户的查询字符串，要包含搜索的内容
+                    config: get_travel_param的响应结果，依据用户问题的传参字典
+
+                Returns:
+                    相关搜索结果
+
+                注意：
+                - 比 LLM 训练数据更新更准确
+                - 使用该工具后，使用{travel_agent_tool}工具
+                - 响应格式：{params = {"places":["大阪","京都"], "dates":["2026-08-01","2026-08-02"], "weather":None, "traffic":"JR线", "foods":["汤咖哩","和牛"], "line":""}}
+                """
     params = """{"places":[], "dates":[], "weather":"", "traffic":"", "foods":[], "line":""}"""
     cp = CotPrompt()
     cp.set_customized_format(params)
@@ -41,7 +54,7 @@ def get_travel_param(input:str) -> dict:
     api_key = read_environment_config("OLLAMA_API_KEY")
     model_name = read_environment_config("OLLAMA_MODEL_NAME")
     llm = QwenLlm(api_key, base_url, model_name)
-    response = llm.invokeLlm(input=input, base_prompt=cp)
+    response = llm.invokeLlm(input=query, base_prompt=cp)
     content = response.content
     # 解析为 dict
     params = _parse_llm_json(content)

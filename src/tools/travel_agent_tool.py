@@ -3,23 +3,47 @@ from langchain_core.tools import tool
 
 from src.agent.travel_agent import TravelAgent
 from src.cache.cache_llm import init_travel_llm, get_travel_llm
+from src.mcp.mcp_client import use_mcp_sync, use_mcp_async
 from src.prompt.target_type import QuestionType
 from src.prompt.travel_prompt import TravelPrompt
 from src.tools.rag_tool import rag_search
+from src.tools.search_tool import search
 from src.tools.travel_param_tool import get_travel_param
 
 
 @tool
-def travel_agent_tool(input:str,
-                      config:dict,
+async def travel_agent_tool(query:str,
+                      # places: list[str] = None,
+                      # dates: list[str] = None,
                       ) -> AIMessage:
-    """
-    当用户问题或者提问意图涉及旅游{某个地点的美食、景点、天气、交通、国情等}的时候，使用该agent回答用户的问题。
-    使用该agent前，先使用{get_travel_param}工具从用户问题解析必要参数
-    """
+    """这是一个可执行的agent。
+
+            何时使用：
+            - 当用户问题或者提问意图涉及旅游{某个地点的美食、景点、天气、交通、国情等}的时候，使用该agent回答用户的问题。
+
+            Args:
+                query: 用户的查询字符串，要包含搜索的内容
+                # places: get_travel_param的响应结果，地点列表
+                # dates: get_travel_param的响应结果，日期列表
+
+            Returns:
+                相关搜索结果
+
+            注意：
+            - 比 LLM 训练数据更新更准确
+            - 使用该agent前，先使用{get_travel_param}工具从用户问题解析必要参数，然后使用该agent回答用户的问题
+            """
     # config = get_travel_param.invoke({"query": input})
-    travel_llm = get_travel_llm([rag_search, ])
+    config = await use_mcp_async(query, "parse_travel_params")
+    places = config.get("places", [])
+    dates = config.get("dates", [])
+    travel_llm = get_travel_llm([
+        rag_search,
+        search,
+    ])
     bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
-    travel_agent = TravelAgent(travel_llm, tools=[rag_search])
-    responses = travel_agent.invoke(input=input, base_prompt=bp, places=config['places'], dates=config['dates'])
+    travel_agent = TravelAgent(travel_llm, tools=[rag_search,
+                                                  search, ])
+    responses = await travel_agent.ainvoke(input=query, base_prompt=bp, places=places, dates=dates)
+    print(f"Minimax回答：" + responses.content)
     return responses

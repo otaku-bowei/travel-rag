@@ -48,3 +48,29 @@ class BasePrompt(ABC):
                 raise ValueError(f"模板 '{msg.content[:50]}' 缺少参数: {e}")
             lines.append(SystemMessage(content))
         return lines
+
+    def _mix_system_message(self, msgs: list[SystemMessage]) -> SystemMessage:
+        """把多个 SystemMessage 合并为单个 SystemMessage
+
+        用途：在 agent invoke 时避免多个 SystemMessage 引起 LLM 困惑，
+        通过 ChatPromptTemplate 构造单个 SystemMessage。
+
+        Args:
+            msgs: 要合并的 SystemMessage 列表
+
+        Returns:
+            合并后的单个 SystemMessage
+
+        使用示例:
+            mixed = base_prompt._mix_system_message(base_prompt.get_messages())
+            template = ChatPromptTemplate.from_messages([
+                ("system", mixed.content),
+                ("human", "{question}"),
+            ])
+        """
+        if not msgs:
+            return SystemMessage(content="")
+
+        # 用换行分隔多个 message 的 content
+        combined_content = "\n\n".join([m.content for m in msgs])
+        return SystemMessage(content=combined_content)
