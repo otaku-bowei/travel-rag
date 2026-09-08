@@ -29,11 +29,16 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
         self._llm_models: dict = {}
         self.chc = chc
         self._model_name = "unknow"
+        self._llm_start_times: dict = {}
+        self._llm_step_indexes: dict = {}
 
 
     @overrides
     def on_chain_start(self, serialized, inputs, *, run_id, **kwargs):
         rid = str(run_id)
+        # ⭐ DEBUG: 临时加的，验证 LangGraph 是否真的把 callback 传给了内层 agent
+        name = serialized.get('name', 'N/A') if isinstance(serialized, dict) else 'N/A'
+        print(f"[DEBUG chain_start] rid={rid[:8]}, name={name}, instance_id={id(self)}")
         self._start_times[rid] = time.perf_counter()
         self._token_usage[rid] = {
             'prompt_tokens': 0,
@@ -64,6 +69,9 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
 
     @overrides
     def on_llm_start(self, serialized, prompts, *, run_id, parent_run_id=None, **kwargs):
+        # ⭐ DEBUG
+        print(f"[DEBUG llm_start] run_id={str(run_id)[:8]}, parent={str(parent_run_id)[:8] if parent_run_id else None}, instance_id={id(self)}")
+        self._llm_start_times[str(run_id)] = time.perf_counter()
         if parent_run_id is None:
             return
         chain_rid = str(parent_run_id)
@@ -77,15 +85,19 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
 
     @overrides
     def on_llm_end(self, response: LLMResult, *, run_id, parent_run_id=None, **kwargs):
-        if parent_run_id is None:
-            return
-        chain_rid = str(parent_run_id)
-        if chain_rid not in self._start_times:
-            return
+        llm_rid = str(run_id)
+        chain_rid = str(parent_run_id) if parent_run_id else ''
 
         llm_output = getattr(response, 'llm_output', None) or {}
         token_usage = llm_output.get('token_usage') or {}
-        if token_usage:
+
+        # 本次 LLM 调用的 model_name（优先从 llm_output 拿，拿不到从父 chain 拿）
+        model_name = llm_output.get('model_name', '') or ''
+        if not model_name:
+            model_name = self._llm_models.get(chain_rid, '') or ''
+
+        # ========== Part A：聚合到 react_chains（需要 chain_rid 在 _start_times 里）==========
+        if chain_rid and chain_rid in self._start_times and token_usage:
             cur = self._token_usage.get(
                 chain_rid,
                 {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0},
@@ -95,11 +107,33 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
             cur['total_tokens'] += (token_usage.get('total_tokens', 0) or 0)
             self._token_usage[chain_rid] = cur
 
-        if isinstance(llm_output, dict):
-            model_name = llm_output.get('model_name', '') or ''
-            self._model_name = model_name
             if model_name and not self._llm_models.get(chain_rid):
                 self._llm_models[chain_rid] = model_name
+
+        # ========== Part B：写 llm_chains（**不依赖 parent_run_id 检查**）==========
+        trace_id = current_trace_id.get()
+        if not trace_id:
+            return  # 没 trace_id 就不写
+
+        # 耗时
+        start = self._llm_start_times.pop(llm_rid, None)
+        duration_ms = int((time.perf_counter() - start) * 1000) if start else 0
+
+        # step_index（同一 trace 内累加）
+        step_index = self._llm_step_indexes.get(trace_id, 0) + 1
+        self._llm_step_indexes[trace_id] = step_index
+
+        self._insert_llm_chain(
+            trace_id=trace_id,
+            llm_run_id=llm_rid,
+            chain_run_id=chain_rid,
+            llm_model=model_name,
+            prompt_tokens=token_usage.get('prompt_tokens', 0) or 0,
+            completion_tokens=token_usage.get('completion_tokens', 0) or 0,
+            total_tokens=token_usage.get('total_tokens', 0) or 0,
+            duration_ms=duration_ms,
+            step_index=step_index,
+        )
 
     # ============================================================
     # 链路结束（写入 react_chains 主记录）
@@ -114,11 +148,12 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
 
         user_question = self._user_questions.pop(rid, '')
         token_usage = self._token_usage.pop(rid, {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0})
-        llm_model = self._model_name
+        # ⭐ 修复：使用本 chain 的 model_name（之前 self._model_name 会被覆盖）
+        llm_model = self._llm_models.pop(rid, '') or self._model_name
         trace_id = current_trace_id.get()
         if not trace_id:
             return
-
+        self._llm_step_indexes.pop(trace_id, None)
         # 提取 final_answer 和统计 tool / llm step
         final_answer, tool_call_count, cot_step_count, tool_names = self._analyze_outputs(outputs)
 
@@ -254,6 +289,7 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
                 return tool_call['name']
         return ''
 
+
     def _insert(self, trace_id, user_question, final_answer,
                 tool_call_count, tool_names, cot_step_count,
                 llm_model, prompt_tokens, completion_tokens, total_tokens,
@@ -297,3 +333,41 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
             )
         except Exception as e:
             print(f"[ClickhouseRecordReactCallback] 写入失败: {e}")
+
+
+    def _insert_llm_chain(self, trace_id, llm_run_id, chain_run_id, llm_model,
+                          prompt_tokens, completion_tokens, total_tokens,
+                          duration_ms, step_index, success=1, error_msg=''):
+        """记录到 clickhouse 写入 llm_chains 表（每次 LLM 调用一行）"""
+        try:
+            self.chc.insert(
+                table='llm_chains',
+                data=[[
+                    trace_id,
+                    llm_run_id,
+                    chain_run_id or '',
+                    llm_model or '',
+                    int(prompt_tokens) if prompt_tokens is not None else 0,
+                    int(completion_tokens) if completion_tokens is not None else 0,
+                    int(total_tokens) if total_tokens is not None else 0,
+                    int(duration_ms) if duration_ms is not None else 0,
+                    int(step_index),
+                    int(success),
+                    error_msg or '',
+                ]],
+                columns=[
+                    'trace_id',
+                    'llm_run_id',
+                    'chain_run_id',
+                    'llm_model',
+                    'prompt_tokens',
+                    'completion_tokens',
+                    'total_tokens',
+                    'duration_ms',
+                    'step_index',
+                    'success',
+                    'error_msg',
+                ]
+            )
+        except Exception as e:
+            print(f"[ClickhouseRecordReactCallback] 写入 llm_chains 失败: {e}")

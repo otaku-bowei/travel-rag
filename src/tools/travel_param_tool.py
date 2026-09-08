@@ -37,7 +37,6 @@ def get_travel_param(query: str) -> dict:
 
                 Args:
                     query: 用户的查询字符串，要包含搜索的内容
-                    config: get_travel_param的响应结果，依据用户问题的传参字典
 
                 Returns:
                     相关搜索结果
@@ -58,6 +57,4 @@ def get_travel_param(query: str) -> dict:
     content = response.content
     # 解析为 dict
     params = _parse_llm_json(content)
-    print(f"[DEBUG] raw content: {content}")
-    print(f"[DEBUG] parsed: {params}")
     return params

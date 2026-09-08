@@ -40,7 +40,7 @@ class CotPrompt(BasePrompt):
 
     def response_format_template(self) -> SystemMessage:
         # 规范响应格式，方便CoT后取数据
-        return SystemMessage(content="默认的JSON格式输出,如:{\"intent\":\"travel\",\"reasoning\":\"用户想知道大阪8月10号至8月17号的旅游攻略\",\"sub_questions\":[\"大阪旅游景点推荐\",\"大阪8月10号只8月17号天气\",\"大阪美食推荐\",\"大阪夏季旅游\"]}")
+        return SystemMessage(content="当没有指定输出的JSON格式时，使用默认的JSON输出格式:{\"intent\":\"travel\",\"reasoning\":\"\",\"sub_questions\":[]}")
 
 
     def intent_recognition_template(self) -> SystemMessage:
@@ -72,7 +72,7 @@ class CotPrompt(BasePrompt):
                              )
 
     def customized_format(self, format_match : str):
-        return SystemMessage(content="但是现在不使用默认JSON输出格式，使用该JSON格式:" + format_match)
+        return SystemMessage(content="指定JSON输出格式:" + format_match)
 
     '''
         getter & setter
@@ -80,7 +80,11 @@ class CotPrompt(BasePrompt):
 
     @overrides
     def set_messages(self):
-        result = [self.base_template(), self.intent_recognition_template(), self.response_format_template(), self.few_shot_template()]
+        result = [self.base_template(),
+                  self.intent_recognition_template(),
+                  self.response_format_template(),
+                  # self.few_shot_template(),
+                  ]
         self.messages = result
 
     @overrides

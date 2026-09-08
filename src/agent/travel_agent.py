@@ -16,6 +16,7 @@ from src.chat.callback.cot_callback import ClickhouseRecordCoTCallback
 from src.client import get_clickhouse_client
 from src.prompt.base import BasePrompt
 
+_travel_agent_cache = None
 
 class TravelAgent(Agent):
 
@@ -26,7 +27,10 @@ class TravelAgent(Agent):
                  ):
         super().__init__()
         self._llm = llm
-        self._build_agent(tools)
+        if _travel_agent_cache is None:
+            self._build_agent(tools)
+        else:
+            self.agent = _travel_agent_cache
 
 
     def _build_agent(self, tools):
@@ -42,6 +46,8 @@ class TravelAgent(Agent):
             # checkpointer=memory,
         )
         self.agent = agent
+        _travel_agent_cache = agent
+
 
     @overrides
     def invoke(self, query: string, base_prompt: BasePrompt, **kwargs: Any) -> AIMessage:

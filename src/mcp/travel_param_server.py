@@ -25,7 +25,7 @@ async def parse_travel_params(query: str) -> dict:
     - 在调用 travel_agent_tool 前，先用此工具提取 places 和 dates
 
     Args:
-        query: 用户的旅游问题，如"推荐大阪8月10日至8月17日玩法"
+        query: 用户的旅游问题
 
     Returns:
         字典包含：

@@ -33,7 +33,6 @@ async def travel_agent_tool(query:str,
             - 比 LLM 训练数据更新更准确
             - 使用该agent前，先使用{get_travel_param}工具从用户问题解析必要参数，然后使用该agent回答用户的问题
             """
-    # config = get_travel_param.invoke({"query": input})
     config = await use_mcp_async(query, "parse_travel_params")
     places = config.get("places", [])
     dates = config.get("dates", [])
@@ -44,6 +43,9 @@ async def travel_agent_tool(query:str,
     bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     travel_agent = TravelAgent(travel_llm, tools=[rag_search,
                                                   search, ])
-    responses = await travel_agent.ainvoke(input=query, base_prompt=bp, places=places, dates=dates)
-    print(f"Minimax回答：" + responses.content)
-    return responses
+    responses = await travel_agent.ainvoke(query=query, base_prompt=bp, places=places, dates=dates)
+    if isinstance(responses, dict):
+        return AIMessage(responses["messages"][-1].content)
+    if hasattr(responses, "content"):
+        return AIMessage(responses.content)
+    return AIMessage(str(responses))
