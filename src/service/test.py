@@ -20,6 +20,7 @@ from src.prompt.cot_prompt import CotPrompt
 from src.prompt.travel_prompt import TravelPrompt
 from src.prompt.target_type import QuestionType
 from src.service.config import *
+from src.tools.date_tool import get_date_info, parse_relative_date
 from src.tools.rag_tool import rag_search
 from src.tools.search_tool import search
 from src.tools.travel_agent_tool import travel_agent_tool
@@ -174,11 +175,13 @@ async def loop_talk_to_agent():
     print("启动agent小助手")
     cot_llm = get_cot_llm([
         # get_travel_param,
-                           travel_agent_tool,
+        parse_relative_date, get_date_info,
+        travel_agent_tool,
                            ])
     # bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     bp = CotPrompt()
     cot_agent = CotAgent(cot_llm, tools=[
+        parse_relative_date, get_date_info,
         travel_agent_tool,
                                          # get_travel_param,
                                          ])

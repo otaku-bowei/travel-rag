@@ -1,6 +1,7 @@
 
 
 import time
+import uuid as uuid_lib
 from typing import Any
 from uuid import UUID
 
@@ -9,7 +10,6 @@ from langchain_core.outputs import LLMResult
 from overrides import overrides
 
 from src.client import ClickHouseClient
-from src.monitor.trace_context import current_trace_id
 
 
 class ClickhouseRecordCoTCallback(BaseCallbackHandler):
@@ -23,7 +23,9 @@ class ClickhouseRecordCoTCallback(BaseCallbackHandler):
     - 失败不能影响主链路
     """
 
-    def __init__(self, chc: ClickHouseClient):
+    def __init__(self, chc: ClickHouseClient, trace_id: str = None):
+        # ⭐ 不再依赖 current_trace_id，实例自己的 trace_id
+        self._trace_id = trace_id or str(uuid_lib.uuid4())
         # run_id → perf_counter 起始时间
         self._start_times: dict = {}
         # trace_id → 当前已记录到的 step_index（同一 trace 累计递增）
@@ -51,9 +53,8 @@ class ClickhouseRecordCoTCallback(BaseCallbackHandler):
             return
         duration_ms = int((time.perf_counter() - start) * 1000)
 
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return
+        # ⭐ 用 self._trace_id，不再读 ContextVar
+        trace_id = self._trace_id
 
         thought, action = self._extract_thought_and_action(response)
 
@@ -78,9 +79,8 @@ class ClickhouseRecordCoTCallback(BaseCallbackHandler):
             return
         duration_ms = int((time.perf_counter() - start) * 1000)
 
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return
+        # ⭐ 用 self._trace_id
+        trace_id = self._trace_id
 
         idx = self._step_index.get(trace_id, 0) + 1
         self._step_index[trace_id] = idx
@@ -198,4 +198,6 @@ class ClickhouseRecordCoTCallback(BaseCallbackHandler):
                 ]
             )
         except Exception as e:
+            import traceback
             print(f"[ClickhouseRecordCoTCallback] 写入失败: {e}")
+            traceback.print_exc()

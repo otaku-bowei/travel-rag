@@ -46,7 +46,7 @@ def get_travel_param(query: str) -> dict:
                 - 使用该工具后，使用{travel_agent_tool}工具
                 - 响应格式：{params = {"places":["大阪","京都"], "dates":["2026-08-01","2026-08-02"], "weather":None, "traffic":"JR线", "foods":["汤咖哩","和牛"], "line":""}}
                 """
-    params = """{"places":[], "dates":[], "weather":"", "traffic":"", "foods":[], "line":""}"""
+    params = """{"places":[], "dates":[], "weather":"", "traffic":"", "foods":[], "line":"",}"""
     cp = CotPrompt()
     cp.set_customized_format(params)
     base_url = read_environment_config("OLLAMA_BASE_URL")

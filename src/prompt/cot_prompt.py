@@ -26,6 +26,7 @@ class CotPrompt(BasePrompt):
     def __init__(self, ):
         super().__init__()
         self.messages = []
+        self._can_add_cust = True
         self.set_messages()
         self.kwargs_messages = []
         self.set_kwargs_messages()
@@ -40,7 +41,7 @@ class CotPrompt(BasePrompt):
 
     def response_format_template(self) -> SystemMessage:
         # 规范响应格式，方便CoT后取数据
-        return SystemMessage(content="当没有指定输出的JSON格式时，使用默认的JSON输出格式:{\"intent\":\"travel\",\"reasoning\":\"\",\"sub_questions\":[]}")
+        return SystemMessage(content="额外添加指定JSON输出到响应:{\"intent\":\"\",\"reasoning\":\"\",\"sub_questions\":[]}")
 
 
     def intent_recognition_template(self) -> SystemMessage:
@@ -72,7 +73,10 @@ class CotPrompt(BasePrompt):
                              )
 
     def customized_format(self, format_match : str):
-        return SystemMessage(content="指定JSON输出格式:" + format_match)
+        if self._can_add_cust :
+            self._can_add_cust = False
+            return SystemMessage(content="再额外添加指定JSON输出到响应:" + format_match)
+        return SystemMessage(content="")
 
     '''
         getter & setter
@@ -81,7 +85,7 @@ class CotPrompt(BasePrompt):
     @overrides
     def set_messages(self):
         result = [self.base_template(),
-                  self.intent_recognition_template(),
+                  # self.intent_recognition_template(),
                   self.response_format_template(),
                   # self.few_shot_template(),
                   ]

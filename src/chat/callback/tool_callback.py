@@ -1,6 +1,7 @@
 from typing import Any
 from uuid import UUID
 import time
+import uuid as uuid_lib
 from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.callbacks import AsyncCallbackHandler
 from langchain_core.outputs import LLMResult
@@ -8,7 +9,6 @@ from overrides import overrides
 
 from src.client import ClickHouseClient
 from src.client.clickhouse_queries import CLICKHOUSE_TOOL_RECORD
-from src.monitor.trace_context import current_trace_id
 
 
 class ClickhouseRecordToolCallback(BaseCallbackHandler):
@@ -16,7 +16,9 @@ class ClickhouseRecordToolCallback(BaseCallbackHandler):
     工具调用记录，失败或成功时候记录到ch
     """
 
-    def __init__(self, chc : ClickHouseClient):
+    def __init__(self, chc: ClickHouseClient, trace_id: str = None):
+        # ⭐ 实例自己的 trace_id，不再依赖 ContextVar
+        self._trace_id = trace_id or str(uuid_lib.uuid4())
         self._start_times = {}
         self.chc = chc
 
@@ -30,9 +32,8 @@ class ClickhouseRecordToolCallback(BaseCallbackHandler):
         run_id_str = str(run_id)
         start_info = self._start_times.pop(run_id_str, (time.time(), 'unknown'))
         duration_ms = int((time.time() - start_info[0]) * 1000)
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return  # 没有 trace_id，跳过
+        # ⭐ 用实例自己的 trace_id
+        trace_id = self._trace_id
 
         self._insert(
             trace_id=trace_id,
@@ -53,9 +54,8 @@ class ClickhouseRecordToolCallback(BaseCallbackHandler):
         start_info = self._start_times.pop(run_id_str, (time.time(), 'unknown'))
         duration_ms = int((time.time() - start_info[0]) * 1000)
 
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return
+        # ⭐ 用实例自己的 trace_id
+        trace_id = self._trace_id
 
         self._insert(
             trace_id=trace_id,

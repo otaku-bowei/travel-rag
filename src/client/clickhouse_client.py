@@ -9,7 +9,6 @@ from typing import Optional, Any
 import clickhouse_connect
 
 
-
 class ClickHouseClient:
     """ClickHouse 客户端封装"""
 
@@ -38,6 +37,9 @@ class ClickHouseClient:
             username=self.username,
             password=self.password
         )
+        # ⭐ clickhouse_connect 不支持并发查询，加锁串行化
+        import threading
+        self._lock = threading.Lock()
         print(f"✅ ClickHouse 已连接: {self.host}:{self.port}/{self.database}")
 
     def execute(self, sql: str) -> Any:
@@ -49,12 +51,13 @@ class ClickHouseClient:
         return self.client.query(sql).result_rows
 
     def insert(self, table: str, data: list[list], columns: list[str]) -> Any:
-        """批量插入数据"""
-        return self.client.insert(
-            table=table,
-            data=data,
-            column_names=columns
-        )
+        """批量插入数据（加锁防止并发冲突）"""
+        with self._lock:
+            return self.client.insert(
+                table=table,
+                data=data,
+                column_names=columns
+            )
 
     def close(self):
         """关闭连接"""
@@ -80,3 +83,7 @@ def init_client(host: str = None, port: int = None, database: str = None,
     _client = ClickHouseClient(host, port, database, username, password)
     return _client
 
+
+def insert(self, table, data, columns):
+    with self._lock:
+        return self.client.insert(table, data, columns)

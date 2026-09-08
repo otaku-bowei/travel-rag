@@ -1,6 +1,7 @@
 
 
 import time
+import uuid as uuid_lib
 from typing import Any
 from uuid import UUID
 
@@ -10,17 +11,19 @@ from langchain_core.outputs import LLMResult
 from overrides import overrides
 
 from src.client import ClickHouseClient
-from src.monitor.trace_context import current_trace_id
 
 
 class ClickhouseRecordReactCallback(BaseCallbackHandler):
     """
     ReAct 链路记录 callback
-    - 必须依赖 current_trace_id（由 TraceChainCallBack 设置）
+    - 不再依赖 current_trace_id / ContextVar
+    - 实例创建时确定 trace_id（可显式传入）
     - 失败不能影响主链路（try/except 包住 _insert）
     """
 
-    def __init__(self, chc: ClickHouseClient):
+    def __init__(self, chc: ClickHouseClient, trace_id: str = None):
+        # ⭐ 实例自己的 trace_id，不再读 ContextVar
+        self._trace_id = trace_id or str(uuid_lib.uuid4())
         self._start_times: dict = {}
         self._user_questions: dict = {}
         # run_id → {prompt_tokens, completion_tokens, total_tokens}
@@ -111,9 +114,7 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
                 self._llm_models[chain_rid] = model_name
 
         # ========== Part B：写 llm_chains（**不依赖 parent_run_id 检查**）==========
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return  # 没 trace_id 就不写
+        trace_id = self._trace_id  # ⭐ 用实例自己的 trace_id
 
         # 耗时
         start = self._llm_start_times.pop(llm_rid, None)
@@ -150,9 +151,8 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
         token_usage = self._token_usage.pop(rid, {'prompt_tokens': 0, 'completion_tokens': 0, 'total_tokens': 0})
         # ⭐ 修复：使用本 chain 的 model_name（之前 self._model_name 会被覆盖）
         llm_model = self._llm_models.pop(rid, '') or self._model_name
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return
+        # ⭐ 用实例自己的 trace_id
+        trace_id = self._trace_id
         self._llm_step_indexes.pop(trace_id, None)
         # 提取 final_answer 和统计 tool / llm step
         final_answer, tool_call_count, cot_step_count, tool_names = self._analyze_outputs(outputs)
@@ -188,9 +188,8 @@ class ClickhouseRecordReactCallback(BaseCallbackHandler):
         print(kwargs)
         metadata = kwargs.get('metadata') or {}
         llm_model = metadata.get('ls_model_name', '')
-        trace_id = current_trace_id.get()
-        if not trace_id:
-            return
+        # ⭐ 用实例自己的 trace_id
+        trace_id = self._trace_id
 
         self._insert(
             trace_id=trace_id,
