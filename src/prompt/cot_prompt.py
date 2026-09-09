@@ -37,7 +37,8 @@ class CotPrompt(BasePrompt):
 
     def base_template(self) -> SystemMessage:
         # 让LLM做简单的问题拆解
-        return SystemMessage(content="推理用户的这个问题，拆解成几个小问题，必要时在分析后使用相关工具或其他agent回答")
+        # return SystemMessage(content="推理用户的这个问题，拆解成几个小问题，必要时在分析后使用相关工具或其他agent回答")
+        return SystemMessage(content="推理用户的这个问题，拆解成旅游的{景点、美食、交通、天气、日程}问题，必要时在分析后使用相关工具或其他agent回答")
 
     def response_format_template(self) -> SystemMessage:
         # 规范响应格式，方便CoT后取数据

@@ -22,7 +22,7 @@ from src.prompt.target_type import QuestionType
 from src.service.config import *
 from src.tools.date_tool import get_date_info, parse_relative_date
 from src.tools.rag_tool import rag_search
-from src.tools.search_tool import search
+from src.tools.search_tool import search, weather_search
 from src.tools.travel_agent_tool import travel_agent_tool
 from src.tools.travel_param_tool import get_travel_param
 from src.vector.chroma_service import ChromaService
@@ -175,13 +175,13 @@ async def loop_talk_to_agent():
     print("启动agent小助手")
     cot_llm = get_cot_llm([
         # get_travel_param,
-        parse_relative_date, get_date_info,
+        # parse_relative_date, get_date_info,
         travel_agent_tool,
                            ])
     # bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     bp = CotPrompt()
     cot_agent = CotAgent(cot_llm, tools=[
-        parse_relative_date, get_date_info,
+        # parse_relative_date, get_date_info,
         travel_agent_tool,
                                          # get_travel_param,
                                          ])
@@ -216,8 +216,12 @@ if __name__ == "__main__":
     load_dotenv()
     mcp_thread = start_mcp_in_thread()
     init_mcp_tools()
-    init_travel_llm([rag_search, get_travel_param, travel_agent_tool])
-    init_cot_llm([rag_search, get_travel_param, travel_agent_tool])
+    init_travel_llm([
+        parse_relative_date, get_date_info,
+        weather_search,
+        rag_search,
+        search,])
+    init_cot_llm([travel_agent_tool])
     # testPromptTemplate()
     # testLlmRequest()
     # testLlmToolRequest()

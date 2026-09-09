@@ -58,7 +58,7 @@ class CotAgent(Agent):
             "callbacks": [
                 # 必须最先：设置 current_trace_id
                 TraceChainCallBack(),
-                ClickhouseRecordReactCallback(get_clickhouse_client()),
+                # ClickhouseRecordReactCallback(get_clickhouse_client()),
                 ClickhouseRecordCoTCallback(get_clickhouse_client()),
                 ClickhouseRecordToolCallback(get_clickhouse_client()),
             ]
@@ -78,7 +78,7 @@ class CotAgent(Agent):
         config = {
             "callbacks": [
                 TraceChainCallBack(),
-                ClickhouseRecordReactCallback(get_clickhouse_client()),
+                # ClickhouseRecordReactCallback(get_clickhouse_client()),
                 ClickhouseRecordCoTCallback(get_clickhouse_client()),
                 ClickhouseRecordToolCallback(get_clickhouse_client()),
             ]

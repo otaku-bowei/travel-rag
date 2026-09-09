@@ -41,10 +41,10 @@ def get_date_info(
     days_forward: int = 7,
     anchor_date: Optional[str] = None,
 ) -> dict:
-    """获取今天的日期和近期日期范围。
+    """根据描述获取今天的日期和近期日期范围。
 
     何时使用：
-    - 用户问"今天是哪天"、"今天星期几"
+    - 用户问日期相关的问题时
     - 需要计算"未来三天"、"近一周"、"下周末"等模糊时间
     - 其他工具（如 get_travel_param）解析日期时需要锚点
 
