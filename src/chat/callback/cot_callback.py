@@ -9,7 +9,7 @@ from langchain_core.callbacks import BaseCallbackHandler
 from langchain_core.outputs import LLMResult
 from overrides import overrides
 
-from src.client import ClickHouseClient
+from src.client.clickhouse_client import ClickHouseClient
 
 
 class ClickhouseRecordCoTCallback(BaseCallbackHandler):

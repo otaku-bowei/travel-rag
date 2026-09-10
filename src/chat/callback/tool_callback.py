@@ -7,7 +7,7 @@ from langchain_core.callbacks import AsyncCallbackHandler
 from langchain_core.outputs import LLMResult
 from overrides import overrides
 
-from src.client import ClickHouseClient
+from src.client.clickhouse_client import ClickHouseClient
 from src.client.clickhouse_queries import CLICKHOUSE_TOOL_RECORD
 
 

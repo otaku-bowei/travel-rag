@@ -17,7 +17,7 @@ from collections.abc import (
 
 _llm_cache = RedisCache(prefix="LLM")
 
-_cot_cache_key = "CoT"
+_cot_cache_key = "cot"
 _travel_cache_key = "travel"
 
 def init_cot_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool] = None):

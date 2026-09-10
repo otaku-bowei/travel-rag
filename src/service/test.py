@@ -14,6 +14,7 @@ from src.cache.cache_llm import *
 from src.chat.minimax_llm import MiniMaxLlm
 from src.chat.qwen_llm import QwenLlm
 from src.client.clickhouse_client import ClickHouseClient
+from src.client.fast_api_client import app
 from src.mcp.base import start_mcp_in_thread
 from src.mcp.mcp_client import init_mcp_tools
 from src.prompt.cot_prompt import CotPrompt
@@ -210,6 +211,9 @@ async def loop_talk_to_agent():
             print(f"\n[错误] {e}\n")
 
 
+def test_fastapi_client():
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8080)
 
 
 if __name__ == "__main__":
@@ -234,4 +238,5 @@ if __name__ == "__main__":
     # test_rag_tool()
     # test_clickhouse_client()
     # test_agent()
-    asyncio.run(loop_talk_to_agent())
+    # asyncio.run(loop_talk_to_agent())
+    test_fastapi_client()

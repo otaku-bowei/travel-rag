@@ -13,7 +13,7 @@ from src.chat.callback.tool_callback import ClickhouseRecordToolCallback
 from src.chat.callback.traces_callback import TraceChainCallBack
 from src.chat.callback.react_callback import ClickhouseRecordReactCallback
 from src.chat.callback.cot_callback import ClickhouseRecordCoTCallback
-from src.client import get_clickhouse_client
+from src.client.clickhouse_client import get_clickhouse_client
 from src.prompt.base import BasePrompt
 
 

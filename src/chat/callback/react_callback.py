@@ -10,7 +10,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.outputs import LLMResult
 from overrides import overrides
 
-from src.client import ClickHouseClient
+from src.client.clickhouse_client import ClickHouseClient
 
 
 class ClickhouseRecordReactCallback(BaseCallbackHandler):
