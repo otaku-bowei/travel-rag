@@ -212,5 +212,11 @@ VALUES
  ('trace-uuid', 'call-uuid', 'rag_search', '{"query":"京都"}', '["doc1","doc2"]', 250, 1, '');
 """
 
+# ========================查询上下文记忆
 
-
+CLICKHOUSE_SESSION_MEMORY = """
+        SELECT role, content FROM session_memory
+        WHERE session_id = %(session_id)s
+        ORDER BY created_at DESC
+        LIMIT %(limit)s
+    """

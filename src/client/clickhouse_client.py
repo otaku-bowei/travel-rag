@@ -7,6 +7,7 @@ import os
 from typing import Optional, Any
 
 import clickhouse_connect
+from clickhouse_connect.driver.query import QueryResult
 
 
 class ClickHouseClient:
@@ -46,9 +47,9 @@ class ClickHouseClient:
         """执行 SQL"""
         return self.client.command(sql)
 
-    def query(self, sql: str) -> Any:
+    def query(self, sql: str, parameters : dict = None) -> QueryResult:
         """执行查询"""
-        return self.client.query(sql).result_rows
+        return self.client.query(sql, parameters=parameters)
 
     def insert(self, table: str, data: list[list], columns: list[str]) -> Any:
         """批量插入数据（加锁防止并发冲突）"""
@@ -83,7 +84,3 @@ def init_client(host: str = None, port: int = None, database: str = None,
     _client = ClickHouseClient(host, port, database, username, password)
     return _client
 
-
-def insert(self, table, data, columns):
-    with self._lock:
-        return self.client.insert(table, data, columns)

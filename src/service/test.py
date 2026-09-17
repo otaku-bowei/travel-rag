@@ -29,7 +29,7 @@ from src.prompt.target_type import QuestionType
 from src.service.config import *
 from src.service.snowflake import get_snowflake
 from src.tools.date_tool import get_date_info, parse_relative_date
-from src.tools.rag_tool import rag_search
+from src.tools.rag_tool import travel_rag_search
 from src.tools.search_tool import search, weather_search
 from src.tools.travel_agent_tool import travel_agent_tool
 from src.tools.travel_param_tool import get_travel_param
@@ -125,8 +125,8 @@ def test_rag_tool():
     # cot_llm = get_cot_llm()
     user_question = "东京有什么好玩的"
     # user_question = "大阪有什么好玩的"
-    init_travel_llm([rag_search])
-    travel_llm = get_travel_llm([rag_search])
+    init_travel_llm([travel_rag_search])
+    travel_llm = get_travel_llm([travel_rag_search])
     """基于TravelPrompt对问题进行翻译"""  # TODO--改为ai实现的CoT
     bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
     responses = travel_llm.invokeLlm(input=user_question, base_prompt=bp, places=["东京"],
@@ -169,11 +169,11 @@ def test_clickhouse_client():
 def test_agent():
     user_question = "大阪有什么好玩的"
     # user_question = "大阪有什么好玩的"
-    init_travel_llm([rag_search])
-    travel_llm = get_travel_llm([rag_search])
+    init_travel_llm([travel_rag_search])
+    travel_llm = get_travel_llm([travel_rag_search])
     """基于TravelPrompt对问题进行翻译"""  # TODO--改为ai实现的CoT
     bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION])
-    travel_agent = TravelAgent(travel_llm, tools=[rag_search])
+    travel_agent = TravelAgent(travel_llm, tools=[travel_rag_search])
     responses = travel_agent.invoke(input=user_question, base_prompt=bp, places=["大阪"],
                                      dates=["2026-08-17", "2026-08-18"])
     print(responses)
@@ -430,14 +430,14 @@ def import_doc_to_milvus(limit: int = 0):
 
 if __name__ == "__main__":
     load_dotenv()
-    # mcp_thread = start_mcp_in_thread()
-    # init_mcp_tools()
-    # init_travel_llm([
-    #     parse_relative_date, get_date_info,
-    #     weather_search,
-    #     rag_search,
-    #     search,])
-    # init_cot_llm([travel_agent_tool])
+    mcp_thread = start_mcp_in_thread()
+    init_mcp_tools()
+    init_travel_llm([
+        parse_relative_date, get_date_info,
+        weather_search,
+        travel_rag_search,
+        search,])
+    init_cot_llm([travel_agent_tool])
     # testPromptTemplate()
     # testLlmRequest()
     # testLlmToolRequest()
@@ -451,6 +451,6 @@ if __name__ == "__main__":
     # test_clickhouse_client()
     # test_agent()
     # asyncio.run(loop_talk_to_agent())
-    # test_fastapi_client()
+    test_fastapi_client()
     # test_milvus_client()
-    import_doc_to_milvus()
+    # import_doc_to_milvus()

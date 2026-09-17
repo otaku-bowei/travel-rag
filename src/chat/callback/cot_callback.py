@@ -17,7 +17,7 @@ class ClickhouseRecordCoTCallback(BaseCallbackHandler):
     CoT 步骤记录 callback
     - 每次 LLM 调用 = 一个 CoT step
     - thought = LLM 文本输出
-    - action = LLM 决定的 tool 调用（如 "rag_search"），没有则为空
+    - action = LLM 决定的 tool 调用（如 "travel_rag_search"），没有则为空
     - observation = 本 callback 不写入，留空后续 JOIN tool_calls 关联--TODO
     - step_index 按 trace_id 维度累计，每个新 trace 从 1 开始
     - 失败不能影响主链路

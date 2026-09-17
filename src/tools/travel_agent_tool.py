@@ -7,7 +7,7 @@ from src.mcp.mcp_client import use_mcp_sync, use_mcp_async
 from src.prompt.target_type import QuestionType
 from src.prompt.travel_prompt import TravelPrompt
 from src.tools.date_tool import get_date_info, parse_relative_date
-from src.tools.rag_tool import rag_search
+from src.tools.rag_tool import travel_rag_search
 from src.tools.search_tool import search, weather_search
 from src.tools.travel_param_tool import get_travel_param
 
@@ -41,14 +41,14 @@ async def travel_agent_tool(query:str,
     travel_llm = get_travel_llm([
         parse_relative_date, get_date_info,
         weather_search,
-        rag_search,
+        travel_rag_search,
         search,
     ])
     bp = TravelPrompt(qt=[QuestionType.WEATHER, QuestionType.ATTRACTION, QuestionType.FOOD, QuestionType.SCHEDULE])
     travel_agent = TravelAgent(travel_llm, tools=[
         parse_relative_date, get_date_info,
         weather_search,
-        rag_search,
+        travel_rag_search,
         search,
         ])
     responses = await travel_agent.ainvoke(query=query, base_prompt=bp, places=places, dates=dates)

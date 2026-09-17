@@ -18,7 +18,7 @@ def search(collection_type: CollectionType,
         query: List[str],
         top_k: int = 5,
         filter_expr: Optional[str] = None,
-           ):
+           ) -> List[List[Dict[str, Any]]]:
     """
     批量查询
     """

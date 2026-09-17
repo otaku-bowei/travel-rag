@@ -1,0 +1,15 @@
+-- 会话记忆专用表（每轮对话 = 2 行：user + assistant）
+CREATE TABLE IF NOT EXISTS session_memory (
+    session_id String, -- ⭐ 主索引
+    user_id String DEFAULT '',
+    role Enum8('user' = 1, 'assistant' = 2),
+    content String,                       -- user_question 或 final_answer
+    trace_id String DEFAULT '',           -- 关联 react_chains.trace_id
+    created_at DateTime DEFAULT now()
+) ENGINE = MergeTree()
+PARTITION BY toYYYYMM(created_at)
+ORDER BY (session_id, created_at)         -- ⭐ 排序键 = session 拉历史天然快
+SETTINGS index_granularity = 8192;
+
+-- 可选：TTL
+ALTER TABLE session_memory MODIFY TTL created_at + INTERVAL 7 DAY;
