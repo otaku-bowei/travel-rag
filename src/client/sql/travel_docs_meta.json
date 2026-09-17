@@ -1,0 +1,692 @@
+{
+  "collection_name": "travel_docs_meta",
+  "schema": {
+    "fields": [
+      {
+        "type_params": [],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "id",
+        "is_primary_key": true,
+        "description": "",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "title",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "title_vector",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [
+          {
+            "params": [
+              {
+                "key": "params",
+                "value": "{\"M\":13,\"efConstruction\":64,\"m\":32,\"nbits\":8,\"refine\":false}"
+              },
+              {
+                "key": "index_type",
+                "value": "HNSW_PQ"
+              },
+              {
+                "key": "metric_type",
+                "value": "COSINE"
+              },
+              {
+                "key": "mmap.enabled",
+                "value": "false"
+              }
+            ],
+            "index_name": "title_vector",
+            "indexID": "468963517645707810",
+            "field_name": "title_vector",
+            "indexed_rows": "0",
+            "total_rows": "0",
+            "state": "Finished",
+            "index_state_fail_reason": "",
+            "pending_index_rows": "0",
+            "min_index_version": 2147483647,
+            "max_index_version": -2147483648,
+            "indexType": "HNSW_PQ",
+            "metricType": "COSINE",
+            "indexParameterPairs": [
+              {
+                "key": "index_type",
+                "value": "HNSW_PQ"
+              },
+              {
+                "key": "metric_type",
+                "value": "COSINE"
+              },
+              {
+                "key": "mmap.enabled",
+                "value": "false"
+              },
+              {
+                "key": "M",
+                "value": 13
+              },
+              {
+                "key": "efConstruction",
+                "value": 64
+              },
+              {
+                "key": "m",
+                "value": 32
+              },
+              {
+                "key": "nbits",
+                "value": 8
+              },
+              {
+                "key": "refine",
+                "value": false
+              }
+            ]
+          }
+        ],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "64"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "likes",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "64",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 64
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "line",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "105",
+        "name": "travel_doc_id",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "106",
+        "name": "create_at",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "107",
+        "name": "update_at",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      }
+    ],
+    "properties": [
+      {
+        "key": "timezone",
+        "value": "UTC"
+      },
+      {
+        "key": "namespace.sharding.enabled",
+        "value": "false"
+      },
+      {
+        "key": "max_field_id",
+        "value": "107"
+      }
+    ],
+    "functions": [],
+    "struct_array_fields": [],
+    "name": "travel_docs_meta",
+    "description": "",
+    "autoID": false,
+    "enable_dynamic_field": false,
+    "dbName": "default",
+    "version": 0,
+    "enable_namespace": false,
+    "primaryField": {
+      "type_params": [],
+      "index_params": [],
+      "fieldID": "100",
+      "name": "id",
+      "is_primary_key": true,
+      "description": "",
+      "data_type": "Int64",
+      "autoID": false,
+      "state": "FieldCreated",
+      "element_type": "None",
+      "default_value": null,
+      "is_dynamic": false,
+      "is_partition_key": false,
+      "is_clustering_key": false,
+      "nullable": false,
+      "is_function_output": false,
+      "dataType": 5,
+      "_placeholderType": 5,
+      "indexes": [],
+      "dimension": -1,
+      "maxCapacity": -1,
+      "maxLength": -1
+    },
+    "hasVectorIndex": true,
+    "enablePartitionKey": false,
+    "scalarFields": [
+      {
+        "type_params": [],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "id",
+        "is_primary_key": true,
+        "description": "",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "title",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "64"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "likes",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "64",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 64
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "line",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "105",
+        "name": "travel_doc_id",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "106",
+        "name": "create_at",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "107",
+        "name": "update_at",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      }
+    ],
+    "vectorFields": [
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "title_vector",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [
+          {
+            "params": [
+              {
+                "key": "params",
+                "value": "{\"M\":13,\"efConstruction\":64,\"m\":32,\"nbits\":8,\"refine\":false}"
+              },
+              {
+                "key": "index_type",
+                "value": "HNSW_PQ"
+              },
+              {
+                "key": "metric_type",
+                "value": "COSINE"
+              },
+              {
+                "key": "mmap.enabled",
+                "value": "false"
+              }
+            ],
+            "index_name": "title_vector",
+            "indexID": "468963517645707810",
+            "field_name": "title_vector",
+            "indexed_rows": "0",
+            "total_rows": "0",
+            "state": "Finished",
+            "index_state_fail_reason": "",
+            "pending_index_rows": "0",
+            "min_index_version": 2147483647,
+            "max_index_version": -2147483648,
+            "indexType": "HNSW_PQ",
+            "metricType": "COSINE",
+            "indexParameterPairs": [
+              {
+                "key": "index_type",
+                "value": "HNSW_PQ"
+              },
+              {
+                "key": "metric_type",
+                "value": "COSINE"
+              },
+              {
+                "key": "mmap.enabled",
+                "value": "false"
+              },
+              {
+                "key": "M",
+                "value": 13
+              },
+              {
+                "key": "efConstruction",
+                "value": 64
+              },
+              {
+                "key": "m",
+                "value": 32
+              },
+              {
+                "key": "nbits",
+                "value": 8
+              },
+              {
+                "key": "refine",
+                "value": false
+              }
+            ]
+          }
+        ],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      }
+    ],
+    "functionFields": [],
+    "dynamicFields": []
+  },
+  "rowCount": 0,
+  "createdTime": 1789540574192,
+  "update_timestamp": 1789540574192,
+  "aliases": [],
+  "description": "",
+  "autoID": false,
+  "id": "468963517645707804",
+  "loadedPercentage": -1,
+  "consistency_level": "Bounded",
+  "replicas": [],
+  "loaded": false,
+  "status": "unloaded",
+  "properties": [
+    {
+      "key": "timezone",
+      "value": "UTC"
+    },
+    {
+      "key": "namespace.sharding.enabled",
+      "value": "false"
+    },
+    {
+      "key": "max_field_id",
+      "value": "107"
+    }
+  ],
+  "shards_num": 1,
+  "_schemaVersion": 1
+}

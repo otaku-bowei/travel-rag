@@ -1,0 +1,498 @@
+{
+  "collection_name": "travel_query_cache",
+  "schema": {
+    "fields": [
+      {
+        "type_params": [],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "id",
+        "is_primary_key": true,
+        "description": "主键id",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "512"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "query",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": "提问的问题",
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "512",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 512
+      },
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "query_vector",
+        "is_primary_key": false,
+        "description": "提问的向量",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "4096"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "response",
+        "is_primary_key": false,
+        "description": "llm的答案",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "4096",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 4096
+      },
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "response_vector",
+        "is_primary_key": false,
+        "description": "llm回答的向量",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "105",
+        "name": "create_at",
+        "is_primary_key": false,
+        "description": "创建时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "106",
+        "name": "update_at",
+        "is_primary_key": false,
+        "description": "更新时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      }
+    ],
+    "properties": [
+      {
+        "key": "timezone",
+        "value": "Asia/Shanghai"
+      },
+      {
+        "key": "namespace.sharding.enabled",
+        "value": "false"
+      },
+      {
+        "key": "max_field_id",
+        "value": "106"
+      }
+    ],
+    "functions": [],
+    "struct_array_fields": [],
+    "name": "travel_query_cache",
+    "description": "旅游问题缓存",
+    "autoID": false,
+    "enable_dynamic_field": false,
+    "dbName": "default",
+    "version": 0,
+    "enable_namespace": false,
+    "primaryField": {
+      "type_params": [],
+      "index_params": [],
+      "fieldID": "100",
+      "name": "id",
+      "is_primary_key": true,
+      "description": "主键id",
+      "data_type": "Int64",
+      "autoID": false,
+      "state": "FieldCreated",
+      "element_type": "None",
+      "default_value": null,
+      "is_dynamic": false,
+      "is_partition_key": false,
+      "is_clustering_key": false,
+      "nullable": false,
+      "is_function_output": false,
+      "dataType": 5,
+      "_placeholderType": 5,
+      "indexes": [],
+      "dimension": -1,
+      "maxCapacity": -1,
+      "maxLength": -1
+    },
+    "hasVectorIndex": false,
+    "enablePartitionKey": false,
+    "scalarFields": [
+      {
+        "type_params": [],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "id",
+        "is_primary_key": true,
+        "description": "主键id",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "512"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "query",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": "提问的问题",
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "512",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 512
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "4096"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "response",
+        "is_primary_key": false,
+        "description": "llm的答案",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "4096",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 4096
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "105",
+        "name": "create_at",
+        "is_primary_key": false,
+        "description": "创建时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "106",
+        "name": "update_at",
+        "is_primary_key": false,
+        "description": "更新时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      }
+    ],
+    "vectorFields": [
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "query_vector",
+        "is_primary_key": false,
+        "description": "提问的向量",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "response_vector",
+        "is_primary_key": false,
+        "description": "llm回答的向量",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      }
+    ],
+    "functionFields": [],
+    "dynamicFields": []
+  },
+  "rowCount": 0,
+  "createdTime": 1789458207239,
+  "update_timestamp": 1789458207239,
+  "aliases": [],
+  "description": "旅游问题缓存",
+  "autoID": false,
+  "id": "468963517644965607",
+  "loadedPercentage": -1,
+  "consistency_level": "Bounded",
+  "replicas": [],
+  "loaded": false,
+  "status": "unloaded",
+  "properties": [
+    {
+      "key": "timezone",
+      "value": "Asia/Shanghai"
+    },
+    {
+      "key": "namespace.sharding.enabled",
+      "value": "false"
+    },
+    {
+      "key": "max_field_id",
+      "value": "106"
+    }
+  ],
+  "shards_num": 1,
+  "_schemaVersion": 1
+}

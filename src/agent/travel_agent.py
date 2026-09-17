@@ -40,6 +40,7 @@ class TravelAgent(Agent):
                 """
         # 可选：加记忆（支持多轮对话）
         # memory = MemorySaver()
+        global _travel_agent_cache
         agent = create_agent(
             model=self._llm.llm,
             tools=tools,

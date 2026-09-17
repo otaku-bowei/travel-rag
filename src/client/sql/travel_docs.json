@@ -1,0 +1,498 @@
+{
+  "collection_name": "travel_docs",
+  "schema": {
+    "fields": [
+      {
+        "type_params": [],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "id",
+        "is_primary_key": true,
+        "description": "主键id",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "2048"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "content",
+        "is_primary_key": false,
+        "description": "原生内容",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "2048",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 2048
+      },
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "vector",
+        "is_primary_key": false,
+        "description": "向量表达",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "source",
+        "is_primary_key": false,
+        "description": "来源",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": true,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "64"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "category",
+        "is_primary_key": false,
+        "description": "分类",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": true,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "64",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 64
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "105",
+        "name": "create_at",
+        "is_primary_key": false,
+        "description": "创建时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "106",
+        "name": "update_at",
+        "is_primary_key": false,
+        "description": "更新时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      }
+    ],
+    "properties": [
+      {
+        "key": "timezone",
+        "value": "Asia/Shanghai"
+      },
+      {
+        "key": "namespace.sharding.enabled",
+        "value": "false"
+      },
+      {
+        "key": "max_field_id",
+        "value": "106"
+      }
+    ],
+    "functions": [],
+    "struct_array_fields": [],
+    "name": "travel_docs",
+    "description": "旅游知识库向量库",
+    "autoID": false,
+    "enable_dynamic_field": false,
+    "dbName": "default",
+    "version": 0,
+    "enable_namespace": false,
+    "primaryField": {
+      "type_params": [],
+      "index_params": [],
+      "fieldID": "100",
+      "name": "id",
+      "is_primary_key": true,
+      "description": "主键id",
+      "data_type": "Int64",
+      "autoID": false,
+      "state": "FieldCreated",
+      "element_type": "None",
+      "default_value": null,
+      "is_dynamic": false,
+      "is_partition_key": false,
+      "is_clustering_key": false,
+      "nullable": false,
+      "is_function_output": false,
+      "dataType": 5,
+      "_placeholderType": 5,
+      "indexes": [],
+      "dimension": -1,
+      "maxCapacity": -1,
+      "maxLength": -1
+    },
+    "hasVectorIndex": false,
+    "enablePartitionKey": false,
+    "scalarFields": [
+      {
+        "type_params": [],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "id",
+        "is_primary_key": true,
+        "description": "主键id",
+        "data_type": "Int64",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 5,
+        "_placeholderType": 5,
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": -1
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "2048"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "content",
+        "is_primary_key": false,
+        "description": "原生内容",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "2048",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 2048
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "source",
+        "is_primary_key": false,
+        "description": "来源",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": true,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "64"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "category",
+        "is_primary_key": false,
+        "description": "分类",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": true,
+        "is_function_output": false,
+        "dataType": 21,
+        "_placeholderType": 21,
+        "max_length": "64",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 64
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "105",
+        "name": "create_at",
+        "is_primary_key": false,
+        "description": "创建时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "106",
+        "name": "update_at",
+        "is_primary_key": false,
+        "description": "更新时间",
+        "data_type": "Timestamptz",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 26,
+        "_placeholderType": 26,
+        "max_length": "256",
+        "indexes": [],
+        "dimension": -1,
+        "maxCapacity": -1,
+        "maxLength": 256
+      }
+    ],
+    "vectorFields": [
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "1024"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "vector",
+        "is_primary_key": false,
+        "description": "向量表达",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "_placeholderType": 101,
+        "dim": "1024",
+        "indexes": [],
+        "dimension": 1024,
+        "maxCapacity": -1,
+        "maxLength": -1
+      }
+    ],
+    "functionFields": [],
+    "dynamicFields": []
+  },
+  "rowCount": 0,
+  "createdTime": 1789457904554,
+  "update_timestamp": 1789457904554,
+  "aliases": [],
+  "description": "旅游知识库向量库",
+  "autoID": false,
+  "id": "468963517644963917",
+  "loadedPercentage": -1,
+  "consistency_level": "Bounded",
+  "replicas": [],
+  "loaded": false,
+  "status": "unloaded",
+  "properties": [
+    {
+      "key": "timezone",
+      "value": "Asia/Shanghai"
+    },
+    {
+      "key": "namespace.sharding.enabled",
+      "value": "false"
+    },
+    {
+      "key": "max_field_id",
+      "value": "106"
+    }
+  ],
+  "shards_num": 1,
+  "_schemaVersion": 1
+}
