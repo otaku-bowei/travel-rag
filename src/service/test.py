@@ -6,6 +6,8 @@
 from dotenv import load_dotenv
 import time
 from pathlib import Path
+
+from src.tools.common_agent_tool import common_agent_tool
 from src.vector import file_util as fu
 from src.vector.milvus_search_type import CollectionType
 from src.client.milvus_client import get_milvus_client
@@ -437,7 +439,11 @@ if __name__ == "__main__":
         weather_search,
         travel_rag_search,
         search,])
-    init_cot_llm([travel_agent_tool])
+    init_cot_llm([
+        travel_agent_tool,
+        common_agent_tool,
+    ])
+    init_common_llm([search])
     # testPromptTemplate()
     # testLlmRequest()
     # testLlmToolRequest()

@@ -11,8 +11,16 @@ from src.tools.travel_agent_tool import travel_agent_tool
 from src.tools.travel_param_tool import get_travel_param
 
 app = Server("mcp-client")
-cot_llm = get_cot_llm([travel_rag_search, get_travel_param, travel_agent_tool])
-master_agent = CotAgent(cot_llm, tools=[travel_rag_search, get_travel_param, travel_agent_tool])
+cot_llm = get_cot_llm([
+    # travel_rag_search,
+    get_travel_param,
+    # travel_agent_tool,
+])
+master_agent = CotAgent(cot_llm, tools=[
+    # travel_rag_search,
+    get_travel_param,
+    # travel_agent_tool,
+])
 
 
 @app.call_tool()

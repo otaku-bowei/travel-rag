@@ -6,6 +6,7 @@ from src.cache.cache_llm import get_cot_llm as gcl
 from src.client.model.chat_model import ChatRequest, ChatResponse
 from src.prompt.cot_prompt import CotPrompt
 from src.service.clickhouse_service import write_memory, get_session_history
+from src.tools.common_agent_tool import common_agent_tool
 from src.tools.rag_tool import travel_rag_search
 from src.tools.travel_agent_tool import travel_agent_tool
 from src.tools.travel_param_tool import get_travel_param
@@ -20,11 +21,13 @@ def get_master_agent():
             # travel_rag_search,
             # get_travel_param,
             travel_agent_tool,
+            common_agent_tool,
         ])
         _cot_agent = CA(cot_llm, tools=[
             # travel_rag_search,
             # get_travel_param,
             travel_agent_tool,
+            common_agent_tool,
         ])
     return _cot_agent
 

@@ -23,12 +23,13 @@ from src.prompt.target_type import QuestionType
 
 class CotPrompt(BasePrompt):
 
-    def __init__(self, session_memory: list[str] = None,):
+    def __init__(self, session_memory: list[str] = None, ):
         super().__init__()
         self.messages = []
         self._can_add_cust = True
         self._session_memory = session_memory
-        self.set_messages()
+        # self.set_messages()
+        self.format = self.response_format_template()
         self.kwargs_messages = []
         self.set_kwargs_messages()
 
@@ -41,11 +42,17 @@ class CotPrompt(BasePrompt):
         # return SystemMessage(content="推理用户的这个问题，拆解成几个小问题，必要时在分析后使用相关工具或其他agent回答")
         return SystemMessage(
             content="推理用户的这个问题，拆解成旅游的{景点、美食、交通、天气、日程}问题，必要时在分析后使用相关工具或其他agent回答")
+        # content="你是agent路由器，只负责挑选tool调用。"
+        #         "绝对不许自己直接回答用户的问题——每一轮必须调用一个tool。"
+        #         "可用tool：\n"
+        #         "- travel_agent_tool: 用户问题涉及旅游（地点/美食/景点/交通/天气/日程/国情等）"
+        #         "- common_agent_tool: 不属于旅游的问题（闲聊/问候/常识/其他话题/元问题）"
+        #         "选 tool 的依据只看当前问题，不要被历史上下文干扰。")
 
     def response_format_template(self) -> SystemMessage:
         # 规范响应格式，方便CoT后取数据
         return SystemMessage(
-            content="额外添加指定JSON输出到响应:{\"intent\":\"\",\"reasoning\":\"\",\"sub_questions\":[]}")
+            content="JSON格式为:{\"intent\":\"\",\"reasoning\":\"\",\"sub_questions\":[]}")
 
     def intent_recognition_template(self) -> SystemMessage:
         # 做简单的意图分析
@@ -76,10 +83,7 @@ class CotPrompt(BasePrompt):
                              )
 
     def customized_format(self, format_match: str):
-        if self._can_add_cust:
-            self._can_add_cust = False
-            return SystemMessage(content="再额外添加指定JSON输出到响应:" + format_match)
-        return SystemMessage(content="")
+        return SystemMessage(content="JSON格式为:" + format_match)
 
     def session_memory(self):
         if not self._session_memory:
@@ -111,7 +115,8 @@ class CotPrompt(BasePrompt):
         result = [self.base_template(),
                   # self.intent_recognition_template(),
                   self.session_memory(),
-                  self.response_format_template(),
+                  # self.response_format_template(),
+                  self.set_messages()
                   # self.few_shot_template(),
                   ]
         self.messages = result
@@ -122,6 +127,7 @@ class CotPrompt(BasePrompt):
 
     @overrides
     def get_messages(self) -> list[SystemMessage]:
+        self.set_messages()
         return self.messages
 
     @overrides
@@ -129,4 +135,4 @@ class CotPrompt(BasePrompt):
         return self.kwargs_messages
 
     def set_customized_format(self, input: str):
-        self.messages.append(self.customized_format(input))
+        self.format = self.customized_format(input)

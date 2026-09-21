@@ -19,6 +19,7 @@ _llm_cache = RedisCache(prefix="LLM")
 
 _cot_cache_key = "cot"
 _travel_cache_key = "travel"
+_common_cache_key = "common"
 
 def init_cot_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool] = None):
     """
@@ -28,6 +29,10 @@ def init_cot_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool] = 
     api_key = read_environment_config("OLLAMA_API_KEY")
     model_name = read_environment_config("OLLAMA_MODEL_NAME")
     llm = QwenLlm(api_key, base_url, model_name, tools)
+    # api_key = read_environment_config("MINIMAX_API_KEY")
+    # model_name = read_environment_config("MINIMAX_MODEL")
+    # base_url = read_environment_config("MINIMAX_BASE_URL")
+    # llm = MiniMaxLlm(api_key, base_url, model_name, tools)
     _llm_cache.save_config(cache_key=_cot_cache_key, config=llm.to_dict())
 
 def init_travel_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool] = None):
@@ -40,8 +45,22 @@ def init_travel_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool]
     llm = MiniMaxLlm(api_key, base_url, model_name, tools)
     _llm_cache.save_config(cache_key=_travel_cache_key, config=llm.to_dict())
 
+def init_common_llm(tools: Sequence[dict[str, Any] | type | Callable | BaseTool] = None):
+    """
+        初始化旅游模型
+    """
+    api_key = read_environment_config("MINIMAX_API_KEY")
+    model_name = read_environment_config("MINIMAX_MODEL")
+    base_url = read_environment_config("MINIMAX_BASE_URL")
+    llm = MiniMaxLlm(api_key, base_url, model_name, tools)
+    _llm_cache.save_config(cache_key=_common_cache_key, config=llm.to_dict())
+
 def get_cot_llm(tools=None) -> QwenLlm:
     return QwenLlm.from_dict(_llm_cache.get_config(_cot_cache_key), tools=tools)
+    # return MiniMaxLlm.from_dict(_llm_cache.get_config(_cot_cache_key), tools=tools)
 
 def get_travel_llm(tools=None) -> MiniMaxLlm:
     return MiniMaxLlm.from_dict(_llm_cache.get_config(_travel_cache_key), tools=tools)
+
+def get_common_llm(tools=None) -> MiniMaxLlm:
+    return MiniMaxLlm.from_dict(_llm_cache.get_config(_common_cache_key), tools=tools)
