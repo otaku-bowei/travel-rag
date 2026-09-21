@@ -1,5 +1,8 @@
 import asyncio
 import threading
+import traceback
+
+from langchain_core.messages import ToolMessage
 
 from src.agent.cot_agent import CotAgent as CA
 from src.cache.cache_llm import get_cot_llm as gcl
@@ -55,8 +58,20 @@ async def for_one_answer(req: ChatRequest) -> ChatResponse:
         responses = await get_master_agent().ainvoke(query=req.question, base_prompt=bp)
         print(responses)
         # 取最后一条 AI 消息作为回答
-        answer = responses["messages"][-1].content
+        # answer = responses["messages"][-1].content
+        # return ChatResponse(answer=answer, session_id=req.session_id)
+        messages = responses["messages"]
+        answer = None
+        # 从后往前找最后一个 ToolMessage
+        for msg in reversed(messages):
+            if isinstance(msg, ToolMessage):
+                answer = msg.content if isinstance(msg.content, str) else str(msg.content)
+                break
+        # 兜底：master 没调 tool（直接回答）时
+        if answer is None:
+            answer = messages[-1].content
         return ChatResponse(answer=answer, session_id=req.session_id)
     except Exception as e:
         print(f"\n[错误] {e}\n")
+        traceback.print_exc()
         return ChatResponse(answer="发生异常", session_id=req.session_id)

@@ -41,7 +41,8 @@ class CotPrompt(BasePrompt):
         # 让LLM做简单的问题拆解
         # return SystemMessage(content="推理用户的这个问题，拆解成几个小问题，必要时在分析后使用相关工具或其他agent回答")
         return SystemMessage(
-            content="推理用户的这个问题，拆解成旅游的{景点、美食、交通、天气、日程}问题，必要时在分析后使用相关工具或其他agent回答")
+            # content="推理用户的这个问题，拆解成旅游的{景点、美食、交通、天气、日程}问题，必要时在分析后使用相关工具或其他agent回答")
+            content="你是agent路由器，只能挑选 tool 调用，绝对不许自己回答。必须调用一个 tool。")
         # content="你是agent路由器，只负责挑选tool调用。"
         #         "绝对不许自己直接回答用户的问题——每一轮必须调用一个tool。"
         #         "可用tool：\n"
@@ -116,7 +117,8 @@ class CotPrompt(BasePrompt):
                   # self.intent_recognition_template(),
                   self.session_memory(),
                   # self.response_format_template(),
-                  self.set_messages()
+                  # TODO-定义格式
+                  # self.format,
                   # self.few_shot_template(),
                   ]
         self.messages = result
